@@ -6,43 +6,58 @@ import tensorflow as tf
 import numpy as np
 import random
 import matplotlib.pyplot as plt
+from skimage.measure import block_reduce
 
 
-env = gym.make('CartPole-v0')
+env = gym.make('Breakout-v0')
 
-D = 4
-H = 128
-learning_rate = 0.0001
+D = 80
+H = 256
+learning_rate = 0.01
 discount = 0.99
-epsilon = 0.2
+epsilon = 0.1
 weight_decay = 0.1
 
 class network:
     def __init__(self, scope):
         self.scope = scope
         with tf.variable_scope(scope):
-            self.input = tf.placeholder(tf.float32, [None, D], name='input')
+            self.input = tf.placeholder(tf.float32, [None, D, D], name='input')
 
-            self.layer1 = tf.contrib.layers.fully_connected(inputs=self.input,
+            self.conv1 = tf.contrib.layers.conv2d(inputs=self.input,
+                                             num_outputs=16,
+                                             kernel_size=8,
+                                             stride=4,
+                                             padding='VALID',
+                                             activation_fn=tf.nn.elu,
+                                             weights_initializer=tf.contrib.layers.xavier_initializer(),
+                                             biases_initializer=tf.constant_initializer(-1),
+                                             trainable=True )
+
+            self.conv2 = tf.contrib.layers.conv2d(inputs=self.conv1,
+                                                   num_outputs=16,
+                                                   kernel_size=8,
+                                                   stride=4,
+                                                   padding='VALID',
+                                                   activation_fn=tf.nn.elu,
+                                                   weights_initializer=tf.contrib.layers.xavier_initializer(),
+                                                   biases_initializer=tf.constant_initializer(-1),
+                                                   trainable=True )
+
+            self.conv2_flat = tf.contrib.layers.flatten(inputs=self.conv2)
+
+            self.fc = tf.contrib.layers.fully_connected(inputs=self.conv2_flat,
                                                        num_outputs=H,
                                                        activation_fn=tf.nn.elu,
                                                        weights_initializer=tf.contrib.layers.xavier_initializer(),
-                                                       weights_regularizer=tf.contrib.layers.l2_regularizer(weight_decay),
+                                                       biases_initializer=tf.constant_initializer(-1),
                                                        trainable=True,
                                                        )
 
-            self.layer2 = tf.contrib.layers.fully_connected(inputs=self.layer1,
-                                                       num_outputs=H,
+            self.q_out = tf.contrib.layers.fully_connected(inputs=self.fc,
+                                                       num_outputs=6,
                                                        activation_fn=tf.nn.elu,
                                                        weights_initializer=tf.contrib.layers.xavier_initializer(),
-                                                       weights_regularizer=tf.contrib.layers.l2_regularizer(weight_decay),
-                                                       trainable=True,
-                                                       )
-            self.q_out = tf.contrib.layers.fully_connected(inputs=self.layer2,
-                                                       num_outputs=2,
-                                                       activation_fn=tf.nn.elu,
-                                                       weights_initializer=tf.contrib.layers.xavier_initializer(),
-                                                       weights_regularizer=tf.contrib.layers.l2_regularizer(weight_decay),
                                                        trainable=True,
                                                        )
 
@@ -54,7 +69,7 @@ class network:
             #minibatch update
             self.q_target = tf.placeholder(tf.float32, [None, 1], name='q_target')
 
-            self.act_target = tf.placeholder(tf.float32, [None, 2], name='act_target')
+            self.act_target = tf.placeholder(tf.float32, [None, 6], name='act_target')
 
             q_out1 = tf.reduce_sum(tf.multiply(self.q_out, self.act_target), axis=1)
 
@@ -77,15 +92,19 @@ targetNet = network('target')
 
 init = tf.global_variables_initializer()
 episode = 1
-max_episode = 300
-batch_size = 500
+max_episode = 3000
+batch_size = 32
 updateFrequencyEpisode = 100
 
+def preproc(state):
+    img_grey = np.dot(state[...,:3], [0.299, 0.587, 0.114])
+    img_downsamp = block_reduce(img_grey, (2, 2))[25:, :]
+    return np.reshape(img_downsamp, (1, 80, 80))
 
 class experience_buffer:
     def __init__(self):
         self.buffer = []
-        self.maxSize = 10000
+        self.maxSize = 1000000
 
     def merge(self, array):
         if len(self.buffer) + len(array) >= self.maxSize:
@@ -103,7 +122,7 @@ with tf.Session() as sess:
     allRewards = []
     exp_buffer = experience_buffer()
     while episode < max_episode:
-        state = np.reshape(env.reset(), (-1, 4))
+        state = preproc(env.reset())
 
         actions_onehot = []
         episode_buffer = []
@@ -113,19 +132,22 @@ with tf.Session() as sess:
         while True:
             if episode > max_episode-10:
                 env.render()
+
             q, act = sess.run( [targetNet.q_out, targetNet.act_out], feed_dict={targetNet.input: state} )
             act = act[0]
-            act_onehot = [0, 0]
+            act_onehot = np.zeros(6)
 
-            if random.uniform(0, 1) < epsilon/episode:
-                act = random.randint(0, 1)
+            if random.uniform(0, 1) < epsilon:
+                act = random.randint(0, 5)
 
             act_onehot[act] = 1
 
             actions_onehot.append(act_onehot)
 
-            state1, reward, done, info = env.step(act)
-            state1 = np.reshape(state1, (-1, 4))
+            env.step(act)
+            for k in range(0, 3):
+                state1, reward, done, info = env.step(act)
+            state1 = preproc(state1)
 
             episode_reward += reward
 
