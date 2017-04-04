@@ -18,7 +18,7 @@ inputs = tf.placeholder(shape=[1,4],dtype=tf.float32)
 W = tf.Variable(tf.random_uniform([4,2],0,0.01))
 v = tf.placeholder(dtype=tf.float32)
 p = tf.nn.softmax(tf.matmul(inputs, W))
-J = p*v
+J = tf.log(p)*v
 
 prediction = tf.argmax(p, 1)
 
