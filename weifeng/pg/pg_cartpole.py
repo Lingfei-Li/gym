@@ -9,18 +9,23 @@ env = gym.make('CartPole-v0')
 
 tf.reset_default_graph()
 
+
+
+
 #These lines establish the feed-forward part of the network used to choose actions
 inputs = tf.placeholder(shape=[1,4],dtype=tf.float32)
+
 W = tf.Variable(tf.random_uniform([4,2],0,0.01))
 v = tf.placeholder(dtype=tf.float32)
-p = tf.matmul(inputs, W)
+p = tf.nn.softmax(tf.matmul(inputs, W))
 J = p*v
 
 prediction = tf.argmax(p, 1)
 
 
 #Below we obtain the loss by taking the sum of squares difference between the target and prediction Q values.
-loss = -J
+al = tf.placeholder(dtype=tf.int32)
+loss = -J[0, al]
 trainer = tf.train.GradientDescentOptimizer(learning_rate=0.01)
 updateModel = trainer.minimize(loss)
 
@@ -73,11 +78,15 @@ with tf.Session() as sess:
         while True:
             j+=1
             #Choose an action by greedily (with e chance of random action) from the Q-network
-            a,allQ = sess.run([prediction,p],feed_dict={inputs:s.reshape((1, 4))})
+            allQ = sess.run(p,feed_dict={inputs:s.reshape((1, 4))})
+            p1 = allQ.tolist()[0]
+            p1 = [a/sum(p1) for a in p1]
+            a = np.random.choice(a=2, size=1, p=p1)
+            #print(a)
 
             #Get new state and reward from environment
-            if np.random.rand(1) < e:
-                a[0] = env.action_space.sample()
+            #if np.random.rand(1) < e:
+            #    a[0] = env.action_space.sample()
             s1, r, d, _ = env.step(a[0])
             memory.add((s, a[0], r)) #add state to memory
             rAll += r
@@ -94,7 +103,7 @@ with tf.Session() as sess:
             ss, sa, sr = samplestates[index]
             vt = sr + y*vt
 
-            _ = sess.run([updateModel],feed_dict={inputs:ss.reshape((1, 4)), v:vt})
+            _ = sess.run([updateModel],feed_dict={inputs:ss.reshape((1, 4)), v:vt, al:sa})
 
 
 
