@@ -10,14 +10,25 @@ env = gym.make('CartPole-v0')
 tf.reset_default_graph()
 
 
-
+perceptron = False
 
 #These lines establish the feed-forward part of the network used to choose actions
 inputs = tf.placeholder(shape=[1,4],dtype=tf.float32)
 
-W = tf.Variable(tf.random_uniform([4,2],0,0.01))
+if perceptron==True:
+    W = tf.Variable(tf.random_uniform([4,2],0,0.01))
+    p = tf.nn.softmax(tf.matmul(inputs, W))
+else:
+    Wih = tf.Variable(tf.random_uniform([4,20],0,0.01))
+    hidden = tf.nn.relu(tf.matmul(inputs, Wih))
+
+    Who = tf.Variable(tf.random_uniform([20,2],0,0.01))
+    out = tf.matmul(hidden, Who)
+    p = tf.nn.softmax(out)
+
+
+
 v = tf.placeholder(dtype=tf.float32)
-p = tf.nn.softmax(tf.matmul(inputs, W))
 J = tf.log(p)*v
 
 prediction = tf.argmax(p, 1)
