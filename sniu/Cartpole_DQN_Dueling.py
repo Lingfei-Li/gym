@@ -47,12 +47,9 @@ class Qnetwork():
         self.targetQ = tf.placeholder(shape=[None], dtype=tf.float32)
         self.actions = tf.placeholder(shape=[None], dtype=tf.int32)
         self.actions_sapce = tf.constant(2)
-
         self.actions_onehot = tf.one_hot(self.actions, self.actions_sapce, dtype=tf.float32)
-
         self.Q = tf.reduce_sum(tf.multiply(self.Qout, self.actions_onehot), reduction_indices=1)
         self.loss = tf.reduce_mean(tf.square(self.targetQ - self.Q))
-
         self.trainer = tf.train.AdamOptimizer(learning_rate=0.01)
         self.updateModel = self.trainer.minimize(self.loss)
 

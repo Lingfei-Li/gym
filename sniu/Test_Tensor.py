@@ -29,7 +29,7 @@ Q_estimate = tf.contrib.layers.fully_connected(inputs=hidden,
 test1,test2 = tf.split(Q_estimate, num_or_size_splits=2, axis=1)
 
 # shape1 = tf.shape(Q_estimate)
-# part1 = tf.slice(Q_estimate,[0,0],[0,2])
+part1 = tf.slice(Q_estimate,[0,0],[0,2])
 # part2 = tf.slice(Q_estimate,[0,2],[0,3])
 #
 # test_p1 = tf.placeholder(shape=[1,2],dtype= tf.float32)
