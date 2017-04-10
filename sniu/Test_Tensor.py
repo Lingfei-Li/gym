@@ -3,54 +3,34 @@ import numpy as np
 import tensorflow as tf
 
 
+def resize(I):
+    """ prepro 210x160x3 uint8 frame into 6400 (80x80) 1D float vector """
+    I = I[35:195]  # crop
+    I = I[::2, ::2, :]  # downsample by factor of 2
+    I[I == 144] = 0  # erase background (background type 1)
+    I[I == 109] = 0  # erase background (background type 2)
+    I[I != 0] = 1  # everything else (paddles, ball) just set to 1
+    I = I[np.newaxis,:]
+    return I.astype(np.float)
+
 # Load the environment
 
-print 1+5//2
-env = gym.make('CartPole-v0')
+if __name__ == "__main__":
 
-#These lines establish the feed-forward part of the network used to choose actions
-inputs1 = tf.placeholder(shape=[1,4],dtype=tf.float32)
+    env = gym.make("SpaceInvaders-v0")
+    s = env.reset()
+    s2 = np.array(s)
+    new_s, reward, d, _ = env.step(1)
+    print reward
+    state = tf.placeholder(tf.float32, [1,80, 80, 3], "state")
+    input_fc = tf.reshape(state, [1,-1])
 
-'''
-One hidden layer
-'''
-hidden = tf.contrib.layers.fully_connected(inputs=inputs1,
-                                       num_outputs=10,
-                                       activation_fn=tf.nn.relu,
-                                       weights_initializer=tf.contrib.layers.xavier_initializer() )
+    init = tf.global_variables_initializer()
+    with tf.Session() as sess:
+        sess.run(init)
 
-#Since there are only two actions, number of outputs must be 2
+        value = sess.run(input_fc,feed_dict={state: resize(s)})
 
-Q_estimate = tf.contrib.layers.fully_connected(inputs=hidden,
-                                       num_outputs=10,
-                                       activation_fn=tf.nn.relu,
-                                       weights_initializer=tf.contrib.layers.xavier_initializer() )
+        print np.shape(value)
 
-test1,test2 = tf.split(Q_estimate, num_or_size_splits=2, axis=1)
-
-# shape1 = tf.shape(Q_estimate)
-part1 = tf.slice(Q_estimate,[0,0],[0,2])
-# part2 = tf.slice(Q_estimate,[0,2],[0,3])
-#
-# test_p1 = tf.placeholder(shape=[1,2],dtype= tf.float32)
-# FW = tf.Variable(tf.random_normal([3,1]))
-# AW = tf.Variable(tf.random_normal([2,1]))
-#
-# test_mul_1 = tf.matmul(Q_estimate,FW)
-# test_mul = tf.matmul(test_p1,AW)
-# test_v = tf.contrib.slim.flatten(Q_estimate)
-#
-
-actions_sapce = np.array([0,1])
-action = tf.placeholder(shape = [1],dtype=tf.int32)
-
-actions_onehot = tf.one_hot(action, 2, dtype=tf.float32)
-init = tf.global_variables_initializer()
-
-
-with tf.Session() as sess:
-    sess.run(init)
-    print env.action_space
-    test3 = sess.run([actions_onehot],feed_dict={action:[0]})
-    print test3
 
