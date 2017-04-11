@@ -6,26 +6,6 @@ import numpy as np
 import _pickle as pickle
 import gym
 
-# hyperparameters
-H = 200  # number of hidden layer neurons
-batch_size = 10  # every how many episodes to do a param update?
-learning_rate = 1e-4
-gamma = 0.99  # discount factor for reward
-decay_rate = 0.99  # decay factor for RMSProp leaky sum of grad^2
-resume = False  # resume from previous checkpoint?
-render = False
-
-# model initialization
-D = 80 * 80  # input dimensionality: 80x80 grid
-if resume:
-    model = pickle.load(open('save.p', 'rb'))
-else:
-    model = {}
-    model['W1'] = np.random.randn(H, D) / np.sqrt(D)  # "Xavier" initialization
-    model['W2'] = np.random.randn(H) / np.sqrt(H)
-
-grad_buffer = {k: np.zeros_like(v) for k, v in model.items()}  # update buffers that add up gradients over a batch
-rmsprop_cache = {k: np.zeros_like(v) for k, v in model.items()}  # rmsprop memory
 
 
 def sigmoid(x):
@@ -70,6 +50,29 @@ def policy_backward(eph, epdlogp):
     return {'W1': dW1, 'W2': dW2}
 
 
+
+
+# hyperparameters
+H = 200  # number of hidden layer neurons
+batch_size = 10  # every how many episodes to do a param update?
+learning_rate = 1e-4
+gamma = 0.99  # discount factor for reward
+decay_rate = 0.99  # decay factor for RMSProp leaky sum of grad^2
+resume = False  # resume from previous checkpoint?
+render = False
+
+# model initialization
+D = 80 * 80  # input dimensionality: 80x80 grid
+if resume:
+    model = pickle.load(open('save.p', 'rb'))
+else:
+    model = {}
+    model['W1'] = np.random.randn(H, D) / np.sqrt(D)  # "Xavier" initialization
+    model['W2'] = np.random.randn(H) / np.sqrt(H)
+
+grad_buffer = {k: np.zeros_like(v) for k, v in model.items()}  # update buffers that add up gradients over a batch
+rmsprop_cache = {k: np.zeros_like(v) for k, v in model.items()}  # rmsprop memory
+
 env = gym.make("Pong-v0")
 observation = env.reset()
 prev_x = None  # used in computing the difference frame
@@ -79,7 +82,6 @@ reward_sum = 0
 episode_number = 0
 while True:
     if render: env.render()
-
     # preprocess the observation, set input to network to be difference image
     cur_x = prepro(observation)
     x = cur_x - prev_x if prev_x is not None else np.zeros(D)
