@@ -1,4 +1,3 @@
-# code from http://karpathy.github.io/2016/05/31/rl/
 
 
 """ Trains an agent with (stochastic) Policy Gradients on Pong. Uses OpenAI Gym. """
@@ -6,19 +5,20 @@ import numpy as np
 import _pickle as pickle
 import gym
 import tensorflow as tf
+import random
 
 # hyperparameters
 H = 200  # number of hidden layer neurons
 batch_size = 10  # every how many episodes to do a param update?
-learning_rate = 1e-2
-gamma = 0.99  # discount factor for reward
+actor_learning_rate = 0.001
+critic_learning_rate = 0.01
+gamma = 0.9  # discount factor for reward
 
 # model initialization
 # D = 80 * 80  # input dimensionality: 80x80 grid
 D = 4
 
-
-class Learner:
+class Actor:
     def __init__(self):
         self.graph = tf.Graph()
 
@@ -32,14 +32,15 @@ class Learner:
             self.probability = tf.nn.sigmoid(tf.matmul(self.h1, self.W2))
 
             #backward
-            self.advantage = tf.placeholder(tf.float32, [None, 1], name="advantage")
-            self.input_action = tf.placeholder(tf.float32, [None, 1], name="input_action")
+            self.advantage = tf.placeholder(tf.float32, None, name="advantage")
+            self.input_action = tf.placeholder(tf.float32, None, name="input_action")
             self.loglik = tf.log( (self.input_action)*(self.probability) + (1-self.input_action)*(1-self.probability)  )
             self.loss = -tf.reduce_mean(self.loglik * self.advantage)  #minus sign because we're doing gradient ascent
-            self.optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate)
+            self.optimizer = tf.train.AdamOptimizer(learning_rate=actor_learning_rate)
             self.update = self.optimizer.minimize(self.loss)
+
             self.init = tf.global_variables_initializer()
-            print ("Policy Graph Constructed")
+            print ("Actor Graph Constructed")
 
         self.sess = tf.Session(graph=self.graph)
         self.sess.run(self.init)
@@ -49,6 +50,47 @@ class Learner:
 
     def policy_backward(self, input, advantage, input_action):
         self.sess.run(self.update, feed_dict={self.input: input, self.advantage:advantage, self.input_action: input_action})
+
+    def policy_backward_single(self, input, advantage, input_action):
+        input = input.reshape((-1, D))
+        self.sess.run(self.update, feed_dict={self.input: input, self.advantage:advantage, self.input_action: input_action})
+
+class Critic:
+    def __init__(self):
+        self.graph = tf.Graph()
+
+        # Build the graph when instantiated
+        with self.graph.as_default():
+            #forward
+            self.input = tf.placeholder(tf.float32, [None, D])
+            self.W1 = tf.get_variable('critic_W1', dtype=tf.float32, shape=[D, H], initializer=tf.contrib.layers.xavier_initializer())
+            self.h1 = tf.nn.relu(tf.matmul(self.input, self.W1))
+            self.W2 = tf.get_variable('critic_W2', dtype=tf.float32, shape=[H, 1], initializer=tf.contrib.layers.xavier_initializer())
+            self.v = tf.matmul(self.h1, self.W2)
+
+            #backward
+            self.v_ = tf.placeholder(tf.float32, [None, 1], 'v_')
+            self.rewards = tf.placeholder(tf.float32, None, 'r')
+            self.td_error = self.rewards + (gamma * self.v_ - self.v)
+            self.loss = tf.square(self.td_error)
+            self.optimizer = tf.train.AdamOptimizer(learning_rate=critic_learning_rate)
+            self.update = self.optimizer.minimize(self.loss)
+
+            self.init = tf.global_variables_initializer()
+            print ("Critic Graph Constructed")
+
+        self.sess = tf.Session(graph=self.graph)
+        self.sess.run(self.init)
+
+    def learn(self, s, r, s_):
+        s = s.reshape((-1, D))
+        s_ = s_.reshape((-1, D))
+        v_ = self.sess.run(self.v, feed_dict={self.input: s_})
+        _, td_error = self.sess.run([self.update, self.td_error], feed_dict={self.input:s,
+                                                                             self.v_: v_,
+                                                                             self.rewards:r})
+        return td_error
+
 
 def prepro(I):
     """ prepro 210x160x3 uint8 frame into 6400 (80x80) 1D float vector """
@@ -71,50 +113,61 @@ def discount_rewards(r):
     return discounted_r
 
 
+class Memory:
+    def __init__(self):
+        self.buffer = []
+        self.maxSize = 10000
+
+    def add(self, exp):
+        if len(self.buffer) >= self.maxSize:
+            self.buffer.pop(0)
+        self.buffer.append(exp)
+
+    def sample(self, num):
+        return np.vstack(random.sample(self.buffer, num))
+
+
+
 env = gym.make("CartPole-v0")
-learner = Learner()
+# env = gym.make("Pong-v0")
+actor = Actor()
+critic = Critic()
+mem = Memory()
 prev_x = None  # used in computing the difference frame
 running_reward = None
 reward_sum = 0
 episode_number = 0
 observation = env.reset()
-observations, rewards, actions = [], [], []
 while True:
-
-    # preprocess the observation, set input to network to be difference image
     # cur_x = prepro(observation)
     # x = cur_x - prev_x if prev_x is not None else np.zeros(D)
-    x = observation.reshape((-1, D))
     # prev_x = cur_x
+    x = observation.reshape((-1, D))
 
-    # forward the policy network and sample an action from the returned probability
-    prob = learner.policy_forward(x)
+
+    prob = actor.policy_forward(x.reshape((-1, D)))
+    print(prob)
     action = 1 if np.random.uniform() < prob else 0  # roll the dice!
 
-    # record various intermediates (needed later for backprop)
-    observations.append(observation)  # observation
-    actions.append(action)
 
-    # step the environment and get new measurements
-
-    observation, reward, done, info = env.step(action)    #map 0/1 to 2/3 as the actual action
+    observation_, reward, done, info = env.step(action)    #map 0/1 to 2/3 as the actual action
     reward_sum += reward
 
-    rewards.append(reward)  # record reward (has to be done after we call step() to get reward for previous action)
+
+    s = observation.reshape((-1, D))
+    s_ = observation_.reshape((-1, D))
+
+    td_error = critic.learn(s, reward, s_)
+
+    actor.policy_backward_single(input=s,
+                                 advantage=td_error,
+                                 input_action=action)
+
+
+    observation = observation_
 
     if done:  # an episode finished
         episode_number += 1
-
-        # compute the discounted reward backwards through time
-        discounted_epr = discount_rewards(np.vstack(rewards))
-        discounted_epr -= np.mean(discounted_epr)
-        discounted_epr /= np.std(discounted_epr)
-
-        # perform rmsprop parameter update every batch_size episodes
-        if episode_number % batch_size == 0:
-            learner.policy_backward(input=observations,
-                                    advantage=discounted_epr,
-                                    input_action=np.vstack(actions))
 
         # boring book-keeping
         running_reward = reward_sum if running_reward is None else running_reward * 0.99 + reward_sum * 0.01
