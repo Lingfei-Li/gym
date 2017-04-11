@@ -126,7 +126,7 @@ if __name__ == "__main__":
                 ep_rs_sum = sum(m_reward)
                 epi_record.append(ep_rs_sum)
                 mean_reward = sum(epi_record)/len(epi_record) if len(epi_record) < 100 else sum(epi_record[-100:])/ 100
-                print("episode:",i_episode, "  reward:", ep_rs_sum, "  mean:", mean_reward)
+                print "{} {} {}".format(i_episode, sum(m_reward), mean_reward)
 
 
 

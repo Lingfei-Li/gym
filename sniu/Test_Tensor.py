@@ -1,7 +1,7 @@
-# import gym
-# import numpy as np
-# import tensorflow as tf
-# import random
+import gym
+import numpy as np
+import tensorflow as tf
+import random
 #
 # def resize(I):
 #     """ prepro 210x160x3 state into 1x80x80 1D float vector """
@@ -84,101 +84,28 @@
 
 
 
-import numpy as np
-import tensorflow as tf
-import gym
-import random
-
-
-class Actor(object):
-    def __init__(self, sess, n_features, n_actions, lr=0.001):
-        self.sess = sess
-        self.state = tf.placeholder(tf.float32, [None, n_features], "state")
-        self.action = tf.placeholder(tf.int32, [None,n_actions], "act")
-        self.advantege = tf.placeholder(tf.float32,None , "advantege")  # advantege
-        self.actor_lrate = lr
-
-        with tf.variable_scope('Actor'):
-
-            '''
-            Fully connected network for actor
-            '''
-
-            self.hidden1 = tf.layers.dense(
-                inputs=self.state,
-                units=20,  # number of hidden units
-                activation=tf.nn.relu,
-                kernel_initializer=tf.contrib.layers.xavier_initializer(),  # weights
-                bias_initializer=tf.constant_initializer(0.1),  # biases
-                name='hidden1'
-            )
-
-            self.acts_prob = tf.layers.dense(
-                inputs=self.hidden1,
-                units=n_actions,  # output units
-                activation=tf.nn.softmax,  # get action probabilities
-                kernel_initializer=tf.contrib.layers.xavier_initializer(),  # weights
-                bias_initializer=tf.constant_initializer(0.1),  # biases
-                name='acts_prob'
-            )
-
-
-    def choose_action(self, state):
-        probs = self.sess.run(self.acts_prob, {self.state: state})  # get probabilities for all actions
-        return probs
-
-
-def resize(I):
-
-    I = I[20:196]  # crop
-    I = I[::2, ::2, 0]  # downsample by factor of 2
-    I[I == 144] = 0  # erase background (background type 1)
-    I[I == 109] = 0  # erase background (background type 2)
-    I[I != 0] = 1  # everything else (paddles, ball) just set to 1
-    I = I[np.newaxis,:]
-    return I.astype(np.float).ravel()
-
-def action_list(index,n_action):
-
-    action = np.zeros(n_action,np.int32)
-    action[index] = 1
-    return action
-
-def discount_rewards(rewards):
-    discount_r = np.zeros_like(rewards)
-    curAdd = 0
-    for i in reversed(range(0, rewards.size)):
-        curAdd = curAdd * discount + rewards[i]
-        discount_r[i] = curAdd
-    return discount_r
-
-
 if __name__ == "__main__":
-    np.random.seed(2)
-    tf.set_random_seed(2)  # reproducible
-    MAX_EPISODE = 3000
-    MAX_EP_STEPS = 2000  # maximum time step in one episode
-    discount = 0.9  # reward discount in TD error
 
     # Set the environment
     env = gym.make('SpaceInvaders-v0')
     env.seed(1)  # reproducible
     env = env.unwrapped
-    D = 7040  # input dimensionality
 
-    N_Action = env.action_space.n
-    sess = tf.Session()
-    actor = Actor(sess, n_features=D, n_actions=N_Action)
-    sess.run(tf.global_variables_initializer())
     epi_record = []
-
-
-    state = env.reset()
-    state = resize(state)
-    t = 0
-    print actor.choose_action([state]) * action_list(1,6)
-    print np.shape(actor.choose_action([state]))
-
-
-
+    for i_episode in range(1000):
+        state = env.reset()
+        t = 0
+        m_reward = []
+        done = False
+        while not done:
+            action = random.randint(0,5)
+            state_, r, done, info = env.step(action)
+            m_reward.append(r)
+            state = state_
+            t += 1
+            if done :
+                epi_record.append(sum(m_reward))
+                mean_reward = sum(epi_record) / len(epi_record) if len(epi_record) < 100 else sum(
+                    epi_record[-100:]) / 100
+                print "{} {} {}".format(i_episode,sum(m_reward),mean_reward)
 
