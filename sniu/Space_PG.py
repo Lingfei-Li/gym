@@ -2,8 +2,6 @@
 
 import numpy as np
 import tensorflow as tf
-import matplotlib.pyplot as plt
-import math
 import gym
 import random
 
@@ -12,8 +10,8 @@ class Actor(object):
     def __init__(self, sess, n_features, n_actions, lr=0.001):
         self.sess = sess
         self.state = tf.placeholder(tf.float32, [None, n_features], "state")
-        self.action = tf.placeholder(tf.int32, None, "act")
-        self.advantege = tf.placeholder(tf.float32, None, "advantege")  # advantege
+        self.action = tf.placeholder(tf.float32, [None,n_actions], "act")
+        self.advantege = tf.placeholder(tf.float32,None , "advantege")  # advantege
         self.actor_lrate = lr
 
         with tf.variable_scope('Actor'):
@@ -41,7 +39,8 @@ class Actor(object):
             )
 
         with tf.variable_scope('exp_v'):
-            log_prob = tf.log(self.acts_prob[0, self.action])
+            self.prob = tf.reduce_sum((self.acts_prob * self.action)[0,:])
+            log_prob = tf.log(self.prob)
             self.exp_v = tf.reduce_mean(log_prob * self.advantege)  # advantage (advantege) guided loss
 
         with tf.variable_scope('train'):
@@ -58,7 +57,7 @@ class Actor(object):
 
 
 def resize(I):
-    """ prepro 210x160x3 state into 1x80x80 1D float vector """
+
     I = I[20:196]  # crop
     I = I[::2, ::2, 0]  # downsample by factor of 2
     I[I == 144] = 0  # erase background (background type 1)
@@ -67,7 +66,11 @@ def resize(I):
     I = I[np.newaxis,:]
     return I.astype(np.float).ravel()
 
+def action_list(index,n_action):
 
+    action = np.zeros(n_action,np.int32)
+    action[index] = 1
+    return action
 
 def discount_rewards(rewards):
     discount_r = np.zeros_like(rewards)
@@ -81,7 +84,7 @@ def discount_rewards(rewards):
 if __name__ == "__main__":
     np.random.seed(2)
     tf.set_random_seed(2)  # reproducible
-    MAX_EPISODE = 3000
+    MAX_EPISODE = 4000
     MAX_EP_STEPS = 2000  # maximum time step in one episode
     discount = 0.9  # reward discount in TD error
 
@@ -97,8 +100,6 @@ if __name__ == "__main__":
     sess.run(tf.global_variables_initializer())
     epi_record = []
 
-
-
     for i_episode in range(MAX_EPISODE):
         state = env.reset()
         state = resize(state)
@@ -106,27 +107,26 @@ if __name__ == "__main__":
         m_state = []
         m_action = []
         m_reward = []
-
-        while True:
-
+        done = False
+        while not done:
             action = actor.choose_action([state])
             state_, r, done, info = env.step(action)
             state_ = resize(state_)
             m_reward.append(r)
             m_state.append(state)
-            m_action.append(action)
+            m_action.append(action_list(action,N_Action))
             state = state_
             t += 1
             if done or t >= MAX_EP_STEPS:
-                discounted_rewards = discount_rewards(np.vstack(m_reward))
-                discounted_rewards -= np.mean(discounted_rewards)
-                discounted_rewards /= np.std(discounted_rewards)
+                discounted = discount_rewards(np.vstack(m_reward))
+                discounted -= np.mean(discounted)
+                discounted /= np.std(discounted)
 
-                actor.learn(m_state,m_action,discount_rewards)
+                actor.learn(m_state,np.reshape(np.array(m_action),[len(m_action),N_Action]),np.reshape(np.array(discounted),[-1]))
                 ep_rs_sum = sum(m_reward)
                 epi_record.append(ep_rs_sum)
+                mean_reward = sum(epi_record)/len(epi_record) if len(epi_record) < 100 else sum(epi_record[-100:])/ 100
+                print "{} {} {}".format(i_episode, sum(m_reward), mean_reward)
 
-                print("episode:",i_episode, "  reward:", ep_rs_sum, "  mean:", sum(epi_record)/len(epi_record))
-                break
 
 
