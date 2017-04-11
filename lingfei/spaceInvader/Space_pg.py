@@ -41,6 +41,11 @@ class Actor(object):
         with tf.variable_scope('train'):
             self.train_op = tf.train.AdamOptimizer(self.actor_lrate).minimize(-self.exp_v)  # minimize(-exp_v) = maximize(exp_v)
 
+        tf.add_to_collection('vars', self.hidden1)
+        tf.add_to_collection('vars', self.acts_prob)
+
+        self.saver = tf.train.Saver()
+
     def learn(self, state, action, td):
         feed_dict = {self.state: state, self.action: action, self.td_error: td}
         _, exp_v = self.sess.run([self.train_op, self.exp_v], feed_dict)
@@ -48,6 +53,13 @@ class Actor(object):
 
     def policy_forward(self, state):
         return self.sess.run(self.acts_prob, {self.state: state})  # get probabilities for all actions
+
+    def save_model(self):
+        self.saver.save(self.sess, 'my-model')
+
+    def restore(self):
+        saver = tf.train.import_meta_graph('my-model.meta')
+        saver.restore(self.sess, "my-model")
 
 
 def discount_rewards(r, discount=0.9):
@@ -75,12 +87,14 @@ def preproc(I):
 if __name__ == "__main__":
     np.random.seed(2)
     tf.set_random_seed(2)  # reproducible
-    MAX_EPISODE = 3000
+    MAX_EPISODE = 300000
     MAX_EP_STEPS = 1000  # maximum time step in one episode
+    save_frequency = 20
     discount = 0.9  # reward discount in TD error
     D = 80*80
     batch_size = 10
     running_reward = None
+    f = open('output.txt', 'w')
 
     # Set the environment
     env = gym.make('SpaceInvaders-v0')
@@ -93,6 +107,8 @@ if __name__ == "__main__":
     sess = tf.Session()
     actor = Actor(sess, n_features=N_Feature, n_actions=N_Action)
     sess.run(tf.global_variables_initializer())
+
+    # actor.restore()
 
     for episode_number in range(MAX_EPISODE):
         observation = env.reset()
@@ -133,6 +149,10 @@ if __name__ == "__main__":
                 discounted_epr -= np.mean(discounted_epr)
                 discounted_epr /= np.std(discounted_epr)
 
+                if episode_number % save_frequency == 0:
+                    # actor.save_model()
+                    f.flush()
+
                 # print(discounted_epr)
                 # print(np.vstack(actions))
 
@@ -140,4 +160,7 @@ if __name__ == "__main__":
 
                 running_reward = reward_sum if running_reward is None else running_reward * 0.99 + reward_sum * 0.01
                 print("episode:",episode_number, "sum reward", reward_sum, "running reward:", int(running_reward))
+                f.write("episode: "+str(episode_number) + " sum reward"+ str(reward_sum)+ "running reward: " + str(int(running_reward)))
+                f.write('\n')
                 break
+    f.close()
