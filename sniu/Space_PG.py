@@ -1,0 +1,132 @@
+
+
+import numpy as np
+import tensorflow as tf
+import matplotlib.pyplot as plt
+import math
+import gym
+import random
+
+
+class Actor(object):
+    def __init__(self, sess, n_features, n_actions, lr=0.001):
+        self.sess = sess
+        self.state = tf.placeholder(tf.float32, [None, n_features], "state")
+        self.action = tf.placeholder(tf.int32, None, "act")
+        self.advantege = tf.placeholder(tf.float32, None, "advantege")  # advantege
+        self.actor_lrate = lr
+
+        with tf.variable_scope('Actor'):
+
+            '''
+            Fully connected network for actor
+            '''
+
+            self.hidden1 = tf.layers.dense(
+                inputs=self.state,
+                units=20,  # number of hidden units
+                activation=tf.nn.relu,
+                kernel_initializer=tf.contrib.layers.xavier_initializer(),  # weights
+                bias_initializer=tf.constant_initializer(0.1),  # biases
+                name='hidden1'
+            )
+
+            self.acts_prob = tf.layers.dense(
+                inputs=self.hidden1,
+                units=n_actions,  # output units
+                activation=tf.nn.softmax,  # get action probabilities
+                kernel_initializer=tf.contrib.layers.xavier_initializer(),  # weights
+                bias_initializer=tf.constant_initializer(0.1),  # biases
+                name='acts_prob'
+            )
+
+        with tf.variable_scope('exp_v'):
+            log_prob = tf.log(self.acts_prob[0, self.action])
+            self.exp_v = tf.reduce_mean(log_prob * self.advantege)  # advantage (advantege) guided loss
+
+        with tf.variable_scope('train'):
+            self.train_op = tf.train.AdamOptimizer(self.actor_lrate).minimize(-self.exp_v)  # minimize(-exp_v) = maximize(exp_v)
+
+    def learn(self, state, action, td):
+        feed_dict = {self.state: state, self.action: action, self.advantege: td}
+        self.sess.run([self.train_op, self.exp_v], feed_dict)
+
+
+    def choose_action(self, state):
+        probs = self.sess.run(self.acts_prob, {self.state: state})  # get probabilities for all actions
+        return np.random.choice(np.arange(probs.shape[1]), p=probs.ravel())  # return a int
+
+
+def resize(I):
+    """ prepro 210x160x3 state into 1x80x80 1D float vector """
+    I = I[20:196]  # crop
+    I = I[::2, ::2, 0]  # downsample by factor of 2
+    I[I == 144] = 0  # erase background (background type 1)
+    I[I == 109] = 0  # erase background (background type 2)
+    I[I != 0] = 1  # everything else (paddles, ball) just set to 1
+    I = I[np.newaxis,:]
+    return I.astype(np.float).ravel()
+
+
+
+def discount_rewards(rewards):
+    discount_r = np.zeros_like(rewards)
+    curAdd = 0
+    for i in reversed(range(0, rewards.size)):
+        curAdd = curAdd * discount + rewards[i]
+        discount_r[i] = curAdd
+    return discount_r
+
+
+if __name__ == "__main__":
+    np.random.seed(2)
+    tf.set_random_seed(2)  # reproducible
+    MAX_EPISODE = 3000
+    MAX_EP_STEPS = 2000  # maximum time step in one episode
+    discount = 0.9  # reward discount in TD error
+
+    # Set the environment
+    env = gym.make('SpaceInvaders-v0')
+    env.seed(1)  # reproducible
+    env = env.unwrapped
+    D = 7040  # input dimensionality
+
+    N_Action = env.action_space.n
+    sess = tf.Session()
+    actor = Actor(sess, n_features=D, n_actions=N_Action)
+    sess.run(tf.global_variables_initializer())
+    epi_record = []
+
+
+
+    for i_episode in range(MAX_EPISODE):
+        state = env.reset()
+        state = resize(state)
+        t = 0
+        m_state = []
+        m_action = []
+        m_reward = []
+
+        while True:
+
+            action = actor.choose_action([state])
+            state_, r, done, info = env.step(action)
+            state_ = resize(state_)
+            m_reward.append(r)
+            m_state.append(state)
+            m_action.append(action)
+            state = state_
+            t += 1
+            if done or t >= MAX_EP_STEPS:
+                discounted_rewards = discount_rewards(np.vstack(m_reward))
+                discounted_rewards -= np.mean(discounted_rewards)
+                discounted_rewards /= np.std(discounted_rewards)
+
+                actor.learn(m_state,m_action,discount_rewards)
+                ep_rs_sum = sum(m_reward)
+                epi_record.append(ep_rs_sum)
+
+                print("episode:",i_episode, "  reward:", ep_rs_sum, "  mean:", sum(epi_record)/len(epi_record))
+                break
+
+
