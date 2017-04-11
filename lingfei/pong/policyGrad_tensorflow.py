@@ -14,8 +14,8 @@ learning_rate = 1e-2
 gamma = 0.99  # discount factor for reward
 
 # model initialization
-# D = 80 * 80  # input dimensionality: 80x80 grid
-D = 4
+D = 80 * 80  # input dimensionality: 80x80 grid
+# D = 4
 
 
 class Learner:
@@ -71,7 +71,8 @@ def discount_rewards(r):
     return discounted_r
 
 
-env = gym.make("CartPole-v0")
+# env = gym.make("CartPole-v0")
+env = gym.make("Pong-v0")
 learner = Learner()
 prev_x = None  # used in computing the difference frame
 running_reward = None
@@ -81,23 +82,24 @@ observation = env.reset()
 observations, rewards, actions = [], [], []
 while True:
 
+
     # preprocess the observation, set input to network to be difference image
-    # cur_x = prepro(observation)
-    # x = cur_x - prev_x if prev_x is not None else np.zeros(D)
-    x = observation.reshape((-1, D))
-    # prev_x = cur_x
+    cur_x = prepro(observation)
+    x = cur_x - prev_x if prev_x is not None else np.zeros(D)
+    # x = observation.reshape((-1, D))
+    prev_x = cur_x
 
     # forward the policy network and sample an action from the returned probability
-    prob = learner.policy_forward(x)
+    prob = learner.policy_forward(x.reshape((-1, D)))
     action = 1 if np.random.uniform() < prob else 0  # roll the dice!
 
     # record various intermediates (needed later for backprop)
-    observations.append(observation)  # observation
+    observations.append(x)  # observation
     actions.append(action)
 
     # step the environment and get new measurements
 
-    observation, reward, done, info = env.step(action)    #map 0/1 to 2/3 as the actual action
+    observation, reward, done, info = env.step(action+2)    #map 0/1 to 2/3 as the actual action
     reward_sum += reward
 
     rewards.append(reward)  # record reward (has to be done after we call step() to get reward for previous action)
