@@ -106,7 +106,7 @@ if __name__ == "__main__":
 
     sess = tf.Session()
     actor = Actor(sess, n_features=N_Feature, n_actions=N_Action)
-    sess.run(tf.global_variables_initializer())
+    print(sess.run(tf.global_variables_initializer()))
 
     # actor.restore()
 

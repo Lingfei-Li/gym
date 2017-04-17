@@ -41,6 +41,8 @@ class Learner:
             self.init = tf.global_variables_initializer()
             print ("Policy Graph Constructed")
 
+            self.saver = tf.train.Saver()
+
         self.sess = tf.Session(graph=self.graph)
         self.sess.run(self.init)
 
@@ -49,6 +51,12 @@ class Learner:
 
     def policy_backward(self, input, advantage, input_action):
         self.sess.run(self.update, feed_dict={self.input: input, self.advantage:advantage, self.input_action: input_action})
+
+    def save(self):
+        self.saver.save(self.sess, './my-model')
+
+    def restore(self):
+        self.saver.restore(self.sess, './my-model')
 
 def prepro(I):
     """ prepro 210x160x3 uint8 frame into 6400 (80x80) 1D float vector """
@@ -73,6 +81,7 @@ def discount_rewards(r):
 
 env = gym.make("CartPole-v0")
 learner = Learner()
+learner.restore()
 prev_x = None  # used in computing the difference frame
 running_reward = None
 reward_sum = 0
@@ -115,6 +124,7 @@ while True:
             learner.policy_backward(input=observations,
                                     advantage=discounted_epr,
                                     input_action=np.vstack(actions))
+            learner.save()
 
         # boring book-keeping
         running_reward = reward_sum if running_reward is None else running_reward * 0.99 + reward_sum * 0.01
