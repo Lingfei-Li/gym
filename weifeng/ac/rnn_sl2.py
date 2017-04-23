@@ -1,21 +1,22 @@
 import numpy as np
+import _pickle as pickle
 import gym
 import tensorflow as tf
+import random
+import tensorflow.contrib.slim as slim
 
 # hyperparameters
 H = 200  # number of hidden layer neurons
-batch_size = 10  # every how many episodes to do a param update?
+batch_size = 3  # every how many episodes to do a param update?
+trainlength = 6
 learning_rate = 1e-4
 gamma = 0.99  # discount factor for reward
 I = 80 * 80
-H = 200
 
 def prepro(S):
     """ prepro 210x160x3 uint8 frame into 6400 (80x80) 1D float vector """
     S = S[35:195]  # crop
     S = S[::2, ::2, 0]  # downsample by factor of 2
-    S[S == 144] = 0  # erase background (background type 1)
-    S[S == 109] = 0  # erase background (background type 2)
     S[S != 0] = 1  # everything else (paddles, ball) just set to 1
     return S.astype(np.float).ravel()
 
@@ -74,7 +75,7 @@ class Actor:
         """Rollout policy for one episode, update the replay memory and return total reward"""
         total_reward = 0
         curr_state = self.env.reset()
-        prev_x = None
+        prev_x = x = None
         episode_states = []
         episode_actions = []
         episode_rewards = []
@@ -82,7 +83,8 @@ class Actor:
         episode_return_from_states = []
 
         for time in range(timeSteps):
-           # print(time)
+            # print(time)
+            #if (time>1): episode_next_states.append(x.tolist())
             cur_x = prepro(curr_state)
             x = cur_x - prev_x if prev_x is not None else np.zeros(I)
             prev_x = cur_x
@@ -97,8 +99,8 @@ class Actor:
             # Updating the memory
             curr_state_l = cur_x.tolist()
             next_state_l = next_x.tolist()
-  #          if curr_state_l not in episode_states:
-            episode_states.append(curr_state_l)
+            #if curr_state_l not in episode_states:
+            episode_states.append(x.tolist())
             episode_actions.append(action)
             episode_rewards.append(reward)
             episode_next_states.append(next_state_l)
@@ -110,6 +112,7 @@ class Actor:
             #     for i in range(len(episode_return_from_states)):
             #         episode_return_from_states[i] += reward * tf.pow(gamma, len(episode_return_from_states) - i)
             curr_state = next_state
+        # episode_next_states.append(x.tolist())
 
  #       episode_np = np.array(episode_return_from_states)
  #       episode_np -= np.mean(episode_np)
@@ -182,17 +185,20 @@ class Actor:
 
 class Critic:
     def __init__(self, env):
+        self.rnn_cell = tf.contrib.rnn.BasicLSTMCell(num_units=H, state_is_tuple=True)
+
+        self.h_size = 200
         self.env = env
-      #  self.observation_space = env.observation_space
+        #self.observation_space = env.observation_space
         self.action_space = env.action_space
         self.action_space_n = self.action_space.n
         self.n_input = I
-        self.n_hidden_1 = 200
+        self.n_hidden_1 = H
         # Learning Parameters
         self.learning_rate = 0.0001
         # self.learning_rate = 0.1
         self.num_epochs = 10
-        self.batch_size = 200
+
         # Discount factor
         self.discount = 0.99
         self.graph = tf.Graph()
@@ -203,20 +209,26 @@ class Critic:
                 'out': tf.Variable(np.random.randn(self.n_hidden_1, 1) / np.sqrt(self.n_hidden_1), dtype=tf.float32)
             }
             self.biases = {
-                'h1': tf.Variable(np.random.randn(200) / np.sqrt(self.n_input), dtype=tf.float32),
+                'h1': tf.Variable(np.random.randn(self.n_hidden_1) / np.sqrt(self.n_input), dtype=tf.float32),
                 'out': tf.Variable(np.random.randn(1) / np.sqrt(self.n_hidden_1), dtype=tf.float32)
             }
-#            self.weights_slow = {
-#                'h1': tf.Variable(np.random.randn(self.n_input, self.n_hidden_1) / np.sqrt(self.n_input)),
-#                'out': tf.Variable(np.random.randn(self.n_hidden_1, 1) / np.sqrt(self.n_hidden_1))
-#            }
-#            self.biases_slow = {
-#                'b1': tf.Variable(np.random.randn([self.n_hidden_1]) / np.sqrt(self.n_input)),
-#                'out': tf.Variable(np.random.rand([1]) / np.sqrt(self.n_hidden_1))
-#            }
-            self.state_input = self.x = tf.placeholder("float", [None, self.n_input])  # State input
+
+            self.trainLength = tf.placeholder(dtype=tf.int32)
+            self.batch_size = tf.placeholder(dtype=tf.int32)
+
+            self.state_input = tf.placeholder("float", [None, self.n_input])  # State input
             self.return_input = tf.placeholder("float")  # Target return
-            self.value_pred = self.multilayer_perceptron(self.state_input, self.weights, self.biases)
+
+            #self.rnn_input = self.multilayer_perceptron(self.state_input, self.weights, self.biases)
+            self.rnn_input_2 = tf.add(tf.matmul(self.state_input, self.weights['h1']), self.biases['h1'])
+            #print(self.rnn_input_2)
+            self.rnn_input = tf.reshape(self.rnn_input_2, [self.batch_size, self.trainLength, H])
+            self.state_in = self.rnn_cell.zero_state(self.batch_size, tf.float32)
+            self.rnn, self.rnn_state = tf.nn.dynamic_rnn(
+                inputs=self.rnn_input, cell=self.rnn_cell, dtype=tf.float32, initial_state=self.state_in)
+            self.rnn = tf.reshape(self.rnn, shape=[-1, H])
+            self.value_pred = self.full_connect_out(self.rnn, self.weights, self.biases)
+
 #            self.value_pred_slow = self.multilayer_perceptron(self.state_input, self.weights_slow, self.biases_slow)
             self.loss = tf.reduce_mean(tf.pow(self.value_pred - self.return_input, 2))
             self.optim = tf.train.AdamOptimizer(self.learning_rate).minimize(self.loss)
@@ -225,50 +237,49 @@ class Critic:
         self.sess = tf.Session(graph=self.graph)
         self.sess.run(init)
 
- #   def update_slow(self):
- #       self.weights_slow['h1'] = tf.identity(self.weights['h1'])
- #       self.weights_slow['out'] = tf.identity(self.weights['out'])
- #       self.biases_slow['h1'] = tf.identity(self.biases['h1'])
- #       self.biases_slow['out'] = tf.identity(self.biases['out'])
-
     def multilayer_perceptron(self, x, weights, biases):
         # First hidden layer
         layer_1 = tf.add(tf.matmul(x, weights['h1']), biases['h1'])
-        layer_1 = tf.nn.relu(layer_1)
-        # Second hidden layer
-        out_layer = tf.matmul(layer_1, weights['out']) + biases['out']
-        return out_layer
+        #layer_1 = tf.nn.relu(layer_1)
+        return layer_1
+
+    def full_connect_out(self, state, weights, biases):
+        out = tf.add(tf.matmul(state, weights['out']), biases['out'])
+        return out
 
     def update_value_estimate(self):
-        global replay_states, replay_actions, replay_rewards, replay_next_states, replay_return_from_states
+        global replay_states, replay_actions, replay_rewards, replay_next_states, replay_return_from_states, batch_size, trainlength
         # Monte Carlo prediction
-        batch_size = self.batch_size
+        batch_size_1 = batch_size
         if np.ma.size(replay_states) < batch_size:
-            batch_size = np.ma.size(replay_states)
+            batch_size_1 = np.ma.size(replay_states)
 
         for epoch in range(self.num_epochs):
-            total_batch = min(divmod(np.ma.size(replay_states) ,batch_size)[0], 10)
+            #total_batch = min(divmod(np.ma.size(replay_states) ,batch_size)[0], 10)
             # Loop over all batches
-            for i in range(total_batch):
-                b_size = min(batch_size, 100)
-                batch_state_input, batch_return_input = self.get_next_batch(batch_size, replay_states,
+            for i in range(50):
+                batch_state_input, batch_return_input = self.get_next_batch(batch_size_1, trainlength, replay_states,
                                                                             replay_return_from_states)
                 # Fit training data using batch
+                state_train = (np.zeros([batch_size_1, H]), np.zeros([batch_size_1, H]))
                 self.sess.run(self.optim,
-                              feed_dict={self.state_input: batch_state_input, self.return_input: batch_return_input})
+                              feed_dict={self.state_input: batch_state_input, self.return_input: batch_return_input,
+                                         self.state_in:state_train, self.batch_size:batch_size_1, self.trainLength:trainlength})
 
     def get_advantage_vector(self, states, rewards, next_states):
         # Return TD(0) Advantage for particular state and action
         # Get value of current state
         advantage_vector = []
+        rstate = (np.zeros([1, H]), np.zeros([1, H]))
         for i in range(len(states)):
             state = np.asarray(states[i])
             state = state.reshape(1, I)
             next_state = np.asarray(next_states[i])
             next_state = next_state.reshape(1, I)
             reward = rewards[i]
-            state_value = self.sess.run(self.value_pred, feed_dict={self.state_input: state})
-            next_state_value = self.sess.run(self.value_pred, feed_dict={self.state_input: next_state})
+            state_value, rstate1 = self.sess.run([self.value_pred, self.rnn_state], feed_dict={self.state_input: state, self.trainLength:1, self.batch_size:1, self.state_in:rstate})
+            next_state_value = self.sess.run(self.value_pred, feed_dict={self.state_input: next_state, self.trainLength:1, self.batch_size:1, self.state_in:rstate1})
+            rstate = rstate1
             # Current implementation uses TD(0) advantage
             advantage = reward + self.discount * next_state_value - state_value
             advantage_vector.append(advantage)
@@ -280,22 +291,21 @@ class Critic:
 
         return result_vector
 
-    def get_next_batch(self, batch_size, states_data, returns_data):
-        # Return mini-batch of transitions from replay data
-        all_states = []
-        all_returns = []
-        for i in range(len(states_data)):
-            episode_states = states_data[i]
-            episode_returns = returns_data[i]
-            for j in range(len(episode_states)):
-                all_states.append(episode_states[j])
-                all_returns.append(episode_returns[j])
-        all_states = np.asarray(all_states)
-        all_returns = np.asarray(all_returns)
-        randidx = np.random.randint(all_states.shape[0], size=batch_size)
-        batch_states = all_states[randidx, :]
-        batch_returns = all_returns[randidx]
-        return batch_states, batch_returns
+    def get_next_batch(self, batch_size, trace_length, states_data, returns_data):
+        sampled_episodes = random.sample(states_data, batch_size)
+        sampledTraces = []
+        for episode in sampled_episodes:
+            point = np.random.randint(0, len(episode) + 1 - trace_length)
+            sampledTraces.append(episode[point:point + trace_length])
+        sampledTraces = np.array(sampledTraces)
+
+        sampled_episodes_r = random.sample(returns_data, batch_size)
+        sampledTraces_r = []
+        for episode in sampled_episodes_r:
+            point = np.random.randint(0, len(episode) + 1 - trace_length)
+            sampledTraces_r.append(episode[point:point + trace_length])
+        sampledTraces_r = np.array(sampledTraces_r)
+        return np.reshape(sampledTraces, [batch_size * trace_length, I]), np.reshape(sampledTraces_r, [batch_size * trace_length, 1])
 
 
 class ActorCriticLearner:
