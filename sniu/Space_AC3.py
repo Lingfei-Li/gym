@@ -28,28 +28,20 @@ class Actor:
             CNN for actor
             C_P_C_P_C_P_F_Out
             '''
-            self.conv1 = tf.layers.conv2d(inputs=self.x2, filters=10, kernel_size=3, strides=(1, 1),
-                                          padding="same", activation=tf.nn.relu,
-                                          kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d())
-            self.pool1 = tf.layers.max_pooling2d(inputs=self.conv1, pool_size=2, strides=2)
-
-            self.conv2 = tf.layers.conv2d(inputs=self.pool1, filters=20, kernel_size=3, strides=(1, 1),
-                                          padding="same", activation=tf.nn.relu,
+            self.conv1 = tf.layers.conv2d(inputs=self.x2, filters=16, kernel_size=8, strides=(4 , 4),
+                                          padding="valid", activation=tf.nn.relu,
                                           kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d())
 
-            self.pool2 = tf.layers.max_pooling2d(inputs=self.conv2, pool_size=2, strides=2)
-
-            self.conv3 = tf.layers.conv2d(inputs=self.pool2, filters=30, kernel_size=3, strides=(1, 1),
-                                          padding="same", activation=tf.nn.relu,
+            self.conv2 = tf.layers.conv2d(inputs=self.conv1, filters=32, kernel_size=4, strides=(2, 2),
+                                          padding="valid", activation=tf.nn.relu,
                                           kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d())
 
-            self.pool3 = tf.layers.max_pooling2d(inputs=self.conv3, pool_size=2, strides=2, padding="same")
 
-            self.falt_d = tf.reshape(self.pool3, [-1, 10 * 10 * 30])
+            self.falt_d = tf.contrib.layers.flatten(inputs = self.conv2)
 
             self.hidden1 = tf.layers.dense(
                 inputs=self.falt_d,
-                units=20,  # number of hidden units
+                units=256,  # number of hidden units
                 activation=tf.nn.relu,
                 kernel_initializer=tf.contrib.layers.xavier_initializer(),  # weights
                 bias_initializer=tf.constant_initializer(0.1),  # biases
@@ -244,33 +236,26 @@ class Critic:
             CNN for actor
             C_P_C_P_C_P_F_Out
             '''
-            self.conv1 = tf.layers.conv2d(inputs=self.state_input2, filters=10, kernel_size=3, strides=(1, 1),
-                                          padding="same", activation=tf.nn.relu,
-                                          kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d())
-            self.pool1 = tf.layers.max_pooling2d(inputs=self.conv1, pool_size=2, strides=2)
 
-            self.conv2 = tf.layers.conv2d(inputs=self.pool1, filters=20, kernel_size=3, strides=(1, 1),
-                                          padding="same", activation=tf.nn.relu,
+            self.conv1 = tf.layers.conv2d(inputs=self.state_input2, filters=16, kernel_size=8, strides=(4, 4),
+                                          padding="valid", activation=tf.nn.relu,
                                           kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d())
 
-            self.pool2 = tf.layers.max_pooling2d(inputs=self.conv2, pool_size=2, strides=2)
-
-            self.conv3 = tf.layers.conv2d(inputs=self.pool2, filters=30, kernel_size=3, strides=(1, 1),
-                                          padding="same", activation=tf.nn.relu,
+            self.conv2 = tf.layers.conv2d(inputs=self.conv1, filters=32, kernel_size=4, strides=(2, 2),
+                                          padding="valid", activation=tf.nn.relu,
                                           kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d())
 
-            self.pool3 = tf.layers.max_pooling2d(inputs=self.conv3, pool_size=2, strides=2, padding="same")
-
-            self.falt_d = tf.reshape(self.pool3,[-1, 10*10*30])
+            self.falt_d = tf.contrib.layers.flatten(inputs=self.conv2)
 
             self.hidden1 = tf.layers.dense(
                 inputs=self.falt_d,
-                units=20,  # number of hidden units
+                units=256,  # number of hidden units
                 activation=tf.nn.relu,
                 kernel_initializer=tf.contrib.layers.xavier_initializer(),  # weights
                 bias_initializer=tf.constant_initializer(0.1),  # biases
                 name='hidden1'
             )
+
             self.value_pred = tf.layers.dense(
                 inputs = self.hidden1,
                 units = 1,  # output units
