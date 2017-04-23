@@ -2,6 +2,36 @@ import gym
 import numpy as np
 import tensorflow as tf
 import random
+
+
+i = tf.constant(0)
+c = lambda i: tf.less(i, 10)
+b = lambda i: tf.add(i, 1)
+r = tf.while_loop(c, b, [i])
+
+init = tf.global_variables_initializer()
+with tf.Session() as sess:
+    sess.run(init)
+    test = sess.run(r)
+    print test
+
+# t1 = tf.constant([1,2,3,4,5])
+# t2 = tf.one_hot(t1,6)
+#
+# t3 = tf.constant([0.1,0.1,0.1,0.1,0.1,0.1],shape=[6, 1])
+# t4 = tf.matmul(t2,t3)
+# t5 = tf.reduce_mean(t4)
+#
+# c = lambda i, m: i < 10
+
+# init = tf.global_variables_initializer()
+# with tf.Session() as sess:
+#     sess.run(init)
+#     test = sess.run(t5)
+#     print test
+
+
+
 #
 # def resize(I):
 #     """ prepro 210x160x3 state into 1x80x80 1D float vector """
@@ -81,31 +111,29 @@ import random
 #     #     print np.shape(value)
 #     #
 #     #
-
-
-
-if __name__ == "__main__":
-
-    # Set the environment
-    env = gym.make('SpaceInvaders-v0')
-    env.seed(1)  # reproducible
-    env = env.unwrapped
-
-    epi_record = []
-    for i_episode in range(1000):
-        state = env.reset()
-        t = 0
-        m_reward = []
-        done = False
-        while not done:
-            action = random.randint(0,5)
-            state_, r, done, info = env.step(action)
-            m_reward.append(r)
-            state = state_
-            t += 1
-            if done :
-                epi_record.append(sum(m_reward))
-                mean_reward = sum(epi_record) / len(epi_record) if len(epi_record) < 100 else sum(
-                    epi_record[-100:]) / 100
-                print "{} {} {}".format(i_episode,sum(m_reward),mean_reward)
-
+#
+# if __name__ == "__main__":
+#
+#     # Set the environment
+#     env = gym.make('SpaceInvaders-v0')
+#     env.seed(1)  # reproducible
+#     env = env.unwrapped
+#
+#     epi_record = []
+#     for i_episode in range(1000):
+#         state = env.reset()
+#         t = 0
+#         m_reward = []
+#         done = False
+#         while not done:
+#             action = random.randint(0,5)
+#             state_, r, done, info = env.step(action)
+#             m_reward.append(r)
+#             state = state_
+#             t += 1
+#             if done :
+#                 epi_record.append(sum(m_reward))
+#                 mean_reward = sum(epi_record) / len(epi_record) if len(epi_record) < 100 else sum(
+#                     epi_record[-100:]) / 100
+#                 print "{} {} {}".format(i_episode,sum(m_reward),mean_reward)
+#

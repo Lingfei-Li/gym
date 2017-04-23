@@ -2,31 +2,6 @@ import numpy as np
 import gym
 import tensorflow as tf
 
-# hyperparameters
-H = 200  # number of hidden layer neurons
-batch_size = 10  # every how many episodes to do a param update?
-learning_rate = 1e-4
-gamma = 0.99  # discount factor for reward
-I = 80 * 80
-H = 200
-
-def prepro(S):
-    """ prepro 210x160x3 uint8 frame into 6400 (80x80) 1D float vector """
-    S = S[35:195]  # crop
-    S = S[::2, ::2, 0]  # downsample by factor of 2
-    S[S == 144] = 0  # erase background (background type 1)
-    S[S == 109] = 0  # erase background (background type 2)
-    S[S != 0] = 1  # everything else (paddles, ball) just set to 1
-    return S.astype(np.float).ravel()
-
-
-
-# Replay memory consists of multiple lists of state, action, next state, reward, return from state
-replay_states = []
-replay_actions = []
-replay_rewards = []
-replay_next_states = []
-replay_return_from_states = []
 
 
 class Actor:
@@ -42,23 +17,56 @@ class Actor:
 
         # Build the graph when instantiated
         with self.graph.as_default():
+            #     self.weights = tf.Variable(tf.random_normal([len(self.observation_space.high), self.action_space_n]))
+            #     self.biases = tf.Variable(tf.random_normal([self.action_space_n]))
 
-       #     self.weights = tf.Variable(tf.random_normal([len(self.observation_space.high), self.action_space_n]))
-       #     self.biases = tf.Variable(tf.random_normal([self.action_space_n]))
-
-            self.weights = {
-                'W1' : tf.Variable(np.random.randn(I, H) / np.sqrt(I), dtype=tf.float32),  # "Xavier" initialization
-                'out' : tf.Variable(np.random.randn(H, 6) / np.sqrt(H), dtype=tf.float32)
-            }
-
-            # Inputs
             self.x = tf.placeholder("float", [None, self.observation_space])  # State input
+
+            self.x2 = tf.reshape(self.x, [-1, 80, 80, 1])
+
+            '''
+            CNN for actor
+            C_P_C_P_C_P_F_Out
+            '''
+            self.conv1 = tf.layers.conv2d(inputs=self.x2, filters=10, kernel_size=3, strides=(1, 1),
+                                          padding="same", activation=tf.nn.relu,
+                                          kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d())
+            self.pool1 = tf.layers.max_pooling2d(inputs=self.conv1, pool_size=2, strides=2)
+
+            self.conv2 = tf.layers.conv2d(inputs=self.pool1, filters=20, kernel_size=3, strides=(1, 1),
+                                          padding="same", activation=tf.nn.relu,
+                                          kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d())
+
+            self.pool2 = tf.layers.max_pooling2d(inputs=self.conv2, pool_size=2, strides=2)
+
+            self.conv3 = tf.layers.conv2d(inputs=self.pool2, filters=30, kernel_size=3, strides=(1, 1),
+                                          padding="same", activation=tf.nn.relu,
+                                          kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d())
+
+            self.pool3 = tf.layers.max_pooling2d(inputs=self.conv3, pool_size=2, strides=2, padding="same")
+
+            self.falt_d = tf.reshape(self.pool3, [-1, 10 * 10 * 30])
+
+            self.hidden1 = tf.layers.dense(
+                inputs=self.falt_d,
+                units=20,  # number of hidden units
+                activation=tf.nn.relu,
+                kernel_initializer=tf.contrib.layers.xavier_initializer(),  # weights
+                bias_initializer=tf.constant_initializer(0.1),  # biases
+                name='hidden1'
+            )
+            self.policy = tf.layers.dense(
+                inputs=self.hidden1,
+                units=self.action_space_n,  # output units
+                activation=tf.nn.softmax,
+                kernel_initializer=tf.contrib.layers.xavier_initializer(),  # weights
+                bias_initializer=tf.constant_initializer(0.1),  # biases
+                name='policy'
+            )
+
             self.y = tf.placeholder("float")  # Advantage input
             self.action_input = tf.placeholder("float", [None,
                                                          self.action_space_n])  # Input action to return the probability associated with that action
-
-            self.policy = self.softmax_policy(self.x, self.weights)  # Softmax policy
-
             self.log_action_probability = tf.reduce_sum(self.action_input * tf.log(self.policy))
             self.loss = -self.log_action_probability * self.y  # Loss is score function times advantage
             self.optim = tf.train.AdamOptimizer(self.learning_rate).minimize(self.loss)
@@ -80,9 +88,32 @@ class Actor:
         episode_rewards = []
         episode_next_states = []
         episode_return_from_states = []
+        # hyperparameters
+        H = 200  # number of hidden layer neurons
+        batch_size = 10  # every how many episodes to do a param update?
+        learning_rate = 1e-4
+        gamma = 0.99  # discount factor for reward
+        I = 80 * 80
+        H = 200
+
+        def prepro(S):
+            """ prepro 210x160x3 uint8 frame into 6400 (80x80) 1D float vector """
+            S = S[35:195]  # crop
+            S = S[::2, ::2, 0]  # downsample by factor of 2
+            S[S == 144] = 0  # erase background (background type 1)
+            S[S == 109] = 0  # erase background (background type 2)
+            S[S != 0] = 1  # everything else (paddles, ball) just set to 1
+            return S.astype(np.float).ravel()
+
+        # Replay memory consists of multiple lists of state, action, next state, reward, return from state
+        replay_states = []
+        replay_actions = []
+        replay_rewards = []
+        replay_next_states = []
+        replay_return_from_states = []
 
         for time in range(timeSteps):
-           # print(time)
+            # print(time)
             cur_x = prepro(curr_state)
             x = cur_x - prev_x if prev_x is not None else np.zeros(I)
             prev_x = cur_x
@@ -97,7 +128,7 @@ class Actor:
             # Updating the memory
             curr_state_l = cur_x.tolist()
             next_state_l = next_x.tolist()
-  #          if curr_state_l not in episode_states:
+            #          if curr_state_l not in episode_states:
             episode_states.append(curr_state_l)
             episode_actions.append(action)
             episode_rewards.append(reward)
@@ -111,13 +142,13 @@ class Actor:
             #         episode_return_from_states[i] += reward * tf.pow(gamma, len(episode_return_from_states) - i)
             curr_state = next_state
 
- #       episode_np = np.array(episode_return_from_states)
- #       episode_np -= np.mean(episode_np)
- #       episode_np /= np.std(episode_np)
- #       episode_return_from_states = episode_np.tolist()
+            #       episode_np = np.array(episode_return_from_states)
+            #       episode_np -= np.mean(episode_np)
+            #       episode_np /= np.std(episode_np)
+            #       episode_return_from_states = episode_np.tolist()
         running_add = 0
         for t in reversed(range(0, len(episode_return_from_states))):
- #           if episode_return_from_states[t] != 0: running_add = 0  # reset the sum, since this was a game boundary (pong specific!)
+            #           if episode_return_from_states[t] != 0: running_add = 0  # reset the sum, since this was a game boundary (pong specific!)
             running_add = running_add * gamma + episode_return_from_states[t]
             episode_return_from_states[t] = running_add
 
@@ -134,7 +165,7 @@ class Actor:
             states = replay_states[i]
             actions = replay_actions[i]
             advantage_vector = advantage_vectors[i]
-            for j in range(len(states)-1, len(states)):
+            for j in range(len(states) - 1, len(states)):
                 action = self.to_action_input(actions[j])
 
                 state = np.asarray(states[j])
@@ -183,7 +214,7 @@ class Actor:
 class Critic:
     def __init__(self, env):
         self.env = env
-      #  self.observation_space = env.observation_space
+        #  self.observation_space = env.observation_space
         self.action_space = env.action_space
         self.action_space_n = self.action_space.n
         self.n_input = I
@@ -197,45 +228,56 @@ class Critic:
         self.discount = 0.99
         self.graph = tf.Graph()
         with self.graph.as_default():
-            tf.set_random_seed(1234)
-            self.weights = {
-                'h1': tf.Variable(np.random.randn(self.n_input, self.n_hidden_1) / np.sqrt(self.n_input), dtype=tf.float32),
-                'out': tf.Variable(np.random.randn(self.n_hidden_1, 1) / np.sqrt(self.n_hidden_1), dtype=tf.float32)
-            }
-            self.biases = {
-                'h1': tf.Variable(np.random.randn(200) / np.sqrt(self.n_input), dtype=tf.float32),
-                'out': tf.Variable(np.random.randn(1) / np.sqrt(self.n_hidden_1), dtype=tf.float32)
-            }
-#            self.weights_slow = {
-#                'h1': tf.Variable(np.random.randn(self.n_input, self.n_hidden_1) / np.sqrt(self.n_input)),
-#                'out': tf.Variable(np.random.randn(self.n_hidden_1, 1) / np.sqrt(self.n_hidden_1))
-#            }
-#            self.biases_slow = {
-#                'b1': tf.Variable(np.random.randn([self.n_hidden_1]) / np.sqrt(self.n_input)),
-#                'out': tf.Variable(np.random.rand([1]) / np.sqrt(self.n_hidden_1))
-#            }
-
-
             self.state_input = self.x = tf.placeholder("float", [None, self.n_input])  # State input
+            self.state_input2 = tf.reshape(self.state_input,[-1,80,80,1])
+
+            '''
+            CNN for actor
+            C_P_C_P_C_P_F_Out
+            '''
+            self.conv1 = tf.layers.conv2d(inputs=self.state_input2, filters=10, kernel_size=3, strides=(1, 1),
+                                          padding="same", activation=tf.nn.relu,
+                                          kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d())
+            self.pool1 = tf.layers.max_pooling2d(inputs=self.conv1, pool_size=2, strides=2)
+
+            self.conv2 = tf.layers.conv2d(inputs=self.pool1, filters=20, kernel_size=3, strides=(1, 1),
+                                          padding="same", activation=tf.nn.relu,
+                                          kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d())
+
+            self.pool2 = tf.layers.max_pooling2d(inputs=self.conv2, pool_size=2, strides=2)
+
+            self.conv3 = tf.layers.conv2d(inputs=self.pool2, filters=30, kernel_size=3, strides=(1, 1),
+                                          padding="same", activation=tf.nn.relu,
+                                          kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d())
+
+            self.pool3 = tf.layers.max_pooling2d(inputs=self.conv3, pool_size=2, strides=2, padding="same")
+
+            self.falt_d = tf.reshape(self.pool3,[-1, 10*10*30])
+
+            self.hidden1 = tf.layers.dense(
+                inputs=self.falt_d,
+                units=20,  # number of hidden units
+                activation=tf.nn.relu,
+                kernel_initializer=tf.contrib.layers.xavier_initializer(),  # weights
+                bias_initializer=tf.constant_initializer(0.1),  # biases
+                name='hidden1'
+            )
+            self.value_pred = tf.layers.dense(
+                inputs = self.hidden1,
+                units = 1,  # output units
+                kernel_initializer=tf.contrib.layers.xavier_initializer(),  # weights
+                bias_initializer=tf.constant_initializer(0.1),  # biases
+                name='acts_prob'
+            )
             self.return_input = tf.placeholder("float")  # Target return
-            self.value_pred = self.multilayer_perceptron(self.state_input, self.weights, self.biases)
-#            self.value_pred_slow = self.multilayer_perceptron(self.state_input, self.weights_slow, self.biases_slow)
             self.loss = tf.reduce_mean(tf.pow(self.value_pred - self.return_input, 2))
             self.optim = tf.train.AdamOptimizer(self.learning_rate).minimize(self.loss)
+
             init = tf.global_variables_initializer()
         print("Value Graph Constructed")
         self.sess = tf.Session(graph=self.graph)
         self.sess.run(init)
 
-
-
-    def multilayer_perceptron(self, x, weights, biases):
-        # First hidden layer
-        layer_1 = tf.add(tf.matmul(x, weights['h1']), biases['h1'])
-        layer_1 = tf.nn.relu(layer_1)
-        # Second hidden layer
-        out_layer = tf.matmul(layer_1, weights['out']) + biases['out']
-        return out_layer
 
     def update_value_estimate(self):
         global replay_states, replay_actions, replay_rewards, replay_next_states, replay_return_from_states
@@ -245,7 +287,7 @@ class Critic:
             batch_size = np.ma.size(replay_states)
 
         for epoch in range(self.num_epochs):
-            total_batch = min(divmod(np.ma.size(replay_states) ,batch_size)[0], 10)
+            total_batch = min(divmod(np.ma.size(replay_states), batch_size)[0], 10)
             # Loop over all batches
             for i in range(total_batch):
                 b_size = min(batch_size, 100)
@@ -315,23 +357,23 @@ class ActorCriticLearner:
         for i in range(self.max_episodes):
             episode_states, episode_actions, episode_rewards, episode_next_states, episode_return_from_states, episode_total_reward = self.actor.rollout_policy(
                 10000, i + 1)
-            #print("finish rolling ", i)
+            # print("finish rolling ", i)
             advantage_vector = self.critic.get_advantage_vector(episode_states, episode_rewards, episode_next_states)
             advantage_vectors.append(advantage_vector)
             tr += episode_total_reward
-            print("episode ", i, " reward is : ", episode_total_reward )
-            print("average  : ", tr/(i+1))
+            print("episode ", i, " reward is : ", episode_total_reward)
+            print("average  : ", tr / (i + 1))
             sum_reward += episode_total_reward
             if (i + 1) % self.episodes_before_update == 0:
                 avg_reward = sum_reward / self.episodes_before_update
-                #print("Current {} episode average reward: {}, episode sum reward {}".format(self.episodes_before_update, avg_reward,sum_reward))
+                # print("Current {} episode average reward: {}, episode sum reward {}".format(self.episodes_before_update, avg_reward,sum_reward))
                 # In this part of the code I try to reduce the effects of randomness leading to oscillations in my
                 # network by sticking to a solution if it is close to final solution.
                 # If the average reward for past batch of episodes exceeds that for solving the environment, continue with it
-  #              if avg_reward >= 195:  # This is the criteria for having solved the environment by Open-AI Gym
-  #                  update = False
-  #              else:
-  #                  update = True
+                #              if avg_reward >= 195:  # This is the criteria for having solved the environment by Open-AI Gym
+                #                  update = False
+                #              else:
+                #                  update = True
 
                 update = True
 
@@ -345,19 +387,45 @@ class ActorCriticLearner:
                 del advantage_vectors[:]
                 self.actor.reset_memory()
                 sum_reward = 0
-
-
-
-
 if __name__ == "__main__":
-    env = gym.make('SpaceInvaders-v0')
-    env.seed(1234)
-    np.random.seed(1234)
-    # env.monitor.start('./cartpole-pg-experiment-15')
-    # Learning Parameters
-    max_episodes = 20000
-    episodes_before_update = 2
 
-    ac_learner = ActorCriticLearner(env, max_episodes, episodes_before_update)
-    ac_learner.learn()
-    env.monitor.close()
+
+    # hyperparameters
+    H = 200  # number of hidden layer neurons
+    batch_size = 10  # every how many episodes to do a param update?
+    learning_rate = 1e-4
+    gamma = 0.99  # discount factor for reward
+    I = 80 * 80
+    H = 200
+
+
+    def prepro(S):
+        """ prepro 210x160x3 uint8 frame into 6400 (80x80) 1D float vector """
+        S = S[35:195]  # crop
+        S = S[::2, ::2, 0]  # downsample by factor of 2
+        S[S == 144] = 0  # erase background (background type 1)
+        S[S == 109] = 0  # erase background (background type 2)
+        S[S != 0] = 1  # everything else (paddles, ball) just set to 1
+        return S.astype(np.float).ravel()
+
+
+    # Replay memory consists of multiple lists of state, action, next state, reward, return from state
+    replay_states = []
+    replay_actions = []
+    replay_rewards = []
+    replay_next_states = []
+    replay_return_from_states = []
+
+
+    if __name__ == "__main__":
+        env = gym.make('SpaceInvaders-v0')
+        env.seed(1234)
+        np.random.seed(1234)
+        # env.monitor.start('./cartpole-pg-experiment-15')
+        # Learning Parameters
+        max_episodes = 20000
+        episodes_before_update = 2
+
+        ac_learner = ActorCriticLearner(env, max_episodes, episodes_before_update)
+        ac_learner.learn()
+        env.monitor.close()
