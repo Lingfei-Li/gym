@@ -72,11 +72,19 @@ class Actor:
             self.optim = tf.train.AdamOptimizer(self.learning_rate).minimize(self.loss)
             # Initializing all variables
             self.init = tf.global_variables_initializer()
-
+            self.saver = tf.train.Saver()
             print("Policy Graph Constructed")
 
         self.sess = tf.Session(graph=self.graph)
         self.sess.run(self.init)
+
+
+
+    def save(self):
+        self.saver.save(self.sess, './actor_model')
+
+    def restore(self):
+        self.saver.restore(self.sess, './actor_model')
 
     def rollout_policy(self, timeSteps, episodeNumber):
         """Rollout policy for one episode, update the replay memory and return total reward"""
@@ -274,9 +282,18 @@ class Critic:
             self.optim = tf.train.AdamOptimizer(self.learning_rate).minimize(self.loss)
 
             init = tf.global_variables_initializer()
+            self.saver = tf.train.Saver()
         print("Value Graph Constructed")
         self.sess = tf.Session(graph=self.graph)
         self.sess.run(init)
+
+
+
+    def save(self):
+        self.saver.save(self.sess, './critic_model')
+
+    def restore(self):
+        self.saver.restore(self.sess, './critic_model')
 
 
     def update_value_estimate(self):
@@ -347,6 +364,7 @@ class ActorCriticLearner:
         # Learner parameters
         self.max_episodes = max_episodes
         self.episodes_before_update = episodes_before_update
+        self.save_rate = 1
 
     def learn(self):
 
@@ -387,13 +405,19 @@ class ActorCriticLearner:
                 del advantage_vectors[:]
                 self.actor.reset_memory()
                 sum_reward = 0
+
+            if (i + 1) % self.save_rate == 0:
+                self.actor.save()
+                self.critic.save()
+
+
+
 if __name__ == "__main__":
-
-
     # hyperparameters
     H = 200  # number of hidden layer neurons
     batch_size = 10  # every how many episodes to do a param update?
     learning_rate = 1e-4
+    save_rate = 10
     gamma = 0.99  # discount factor for reward
     I = 80 * 80
     H = 200
