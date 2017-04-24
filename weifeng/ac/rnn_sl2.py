@@ -86,8 +86,6 @@ class Actor:
             # print(time)
             #if (time>1): episode_next_states.append(x.tolist())
             cur_x = prepro(curr_state)
-            x = cur_x - prev_x if prev_x is not None else np.zeros(I)
-            prev_x = cur_x
 
             action = self.choose_action(cur_x)
             next_state, reward, done, info = self.env.step(action)
@@ -292,18 +290,20 @@ class Critic:
         return result_vector
 
     def get_next_batch(self, batch_size, trace_length, states_data, returns_data):
-        sampled_episodes = random.sample(states_data, batch_size)
         sampledTraces = []
-        for episode in sampled_episodes:
+        sampledTraces_r = []
+        l = len(states_data)
+        for i in range(batch_size):
+            index = random.randint(0, l-1)
+            episode = states_data[index]
             point = np.random.randint(0, len(episode) + 1 - trace_length)
             sampledTraces.append(episode[point:point + trace_length])
-        sampledTraces = np.array(sampledTraces)
 
-        sampled_episodes_r = random.sample(returns_data, batch_size)
-        sampledTraces_r = []
-        for episode in sampled_episodes_r:
-            point = np.random.randint(0, len(episode) + 1 - trace_length)
+            episode = returns_data[index]
             sampledTraces_r.append(episode[point:point + trace_length])
+
+
+        sampledTraces = np.array(sampledTraces)
         sampledTraces_r = np.array(sampledTraces_r)
         return np.reshape(sampledTraces, [batch_size * trace_length, I]), np.reshape(sampledTraces_r, [batch_size * trace_length, 1])
 
