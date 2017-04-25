@@ -3,7 +3,7 @@
 
 """ Trains an agent with (stochastic) Policy Gradients on Pong. Uses OpenAI Gym. """
 import numpy as np
-import _pickle as pickle
+#import _pickle as pickle
 import gym
 import tensorflow as tf
 
@@ -26,10 +26,47 @@ class Learner:
         with self.graph.as_default():
             #forward
             self.input = tf.placeholder(tf.float32, [None, D])
-            self.W1 = tf.get_variable('W1', dtype=tf.float32, shape=[D, H], initializer=tf.contrib.layers.xavier_initializer())
-            self.h1 = tf.nn.relu(tf.matmul(self.input, self.W1))
-            self.W2 = tf.get_variable('W2', dtype=tf.float32, shape=[H, 1], initializer=tf.contrib.layers.xavier_initializer())
-            self.probability = tf.nn.sigmoid(tf.matmul(self.h1, self.W2))
+            self.x2 = tf.reshape(self.input, [-1, 80, 80, 1])
+
+            '''
+            CNN for actor
+            C_P_C_P_C_P_F_Out
+            '''
+            self.conv1 = tf.layers.conv2d(inputs=self.x2, filters=16, kernel_size=8, strides=(4 , 4),
+                                          padding="valid", activation=tf.nn.relu,
+                                          kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d())
+
+            self.conv2 = tf.layers.conv2d(inputs=self.conv1, filters=32, kernel_size=4, strides=(2, 2),
+                                          padding="valid", activation=tf.nn.relu,
+                                          kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d())
+
+
+            self.falt_d = tf.contrib.layers.flatten(inputs = self.conv2)
+
+            self.hidden1 = tf.layers.dense(
+                inputs=self.falt_d,
+                units=256,  # number of hidden units
+                activation=tf.nn.relu,
+                kernel_initializer=tf.contrib.layers.xavier_initializer(),  # weights
+                bias_initializer=tf.constant_initializer(0.1),  # biases
+                name='hidden1'
+            )
+            self.probability = tf.layers.dense(
+                inputs=self.hidden1,
+                units=1,  # output units
+                activation=tf.nn.sigmoid,
+                kernel_initializer=tf.contrib.layers.xavier_initializer(),  # weights
+                bias_initializer=tf.constant_initializer(0.1),  # biases
+                name='policy'
+            )
+
+
+
+
+
+
+
+            #self.probability = tf.nn.sigmoid(tf.matmul(self.h1, self.W2))
 
             #backward
             self.advantage = tf.placeholder(tf.float32, [None, 1], name="advantage")
