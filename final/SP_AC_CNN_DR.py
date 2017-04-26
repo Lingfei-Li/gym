@@ -218,7 +218,6 @@ class Critic:
         with self.graph.as_default():
             self.state_input = self.x = tf.placeholder("float", [None, self.n_input])  # State input
             self.state_input2 = tf.reshape(self.state_input,[-1,80,80,1])
-
             self.drop_prob = tf.placeholder(tf.float32)  # dropout (keep probability)  # dropout (keep probability)
 
 
