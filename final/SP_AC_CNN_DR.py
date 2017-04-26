@@ -365,8 +365,8 @@ class ActorCriticLearner:
             advantage_vector = self.critic.get_advantage_vector(episode_states, episode_rewards, episode_next_states,drop_prob)
             advantage_vectors.append(advantage_vector)
             tr += episode_total_reward
-            print("episode ", i, " reward is : ", episode_total_reward)
-            print("average  : ", tr / (i + 1))
+            mean_epi = 0.95 * tr / (i + 1) + 0.05 * episode_total_reward
+            print "{} {} {}".format(i + 1, episode_total_reward, mean_epi)
             sum_reward += episode_total_reward
             if (i + 1) % self.episodes_before_update == 0:
 
@@ -447,5 +447,5 @@ if __name__ == "__main__":
 
     ac_learner = ActorCriticLearner(env, max_episodes, episodes_before_update)
     ac_learner.learn()
-    ac_learner.test(1000)
+    # ac_learner.test(1000)
     env.monitor.close()
