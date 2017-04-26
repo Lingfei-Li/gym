@@ -382,12 +382,9 @@ class ActorCriticLearner:
             advantage_vector = self.critic.get_advantage_vector(episode_states, episode_rewards, episode_next_states,drop_prob)
             advantage_vectors.append(advantage_vector)
 
-            if (i != 0):
-                tr = tr * 0.95 + episode_total_reward * 0.05
-            else:
-                tr = episode_total_reward
+            tr += episode_total_reward
+            print(i, episode_total_reward, tr * 0.95 / (i + 1) + 0.05 * episode_total_reward)
 
-            print(i, episode_total_reward, tr)
             sum_reward += episode_total_reward
             if (i + 1) % self.episodes_before_update == 0:
 
