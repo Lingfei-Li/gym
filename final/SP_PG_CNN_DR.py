@@ -14,13 +14,14 @@ class Actor(object):
         self.action = tf.placeholder(tf.float32, [None,n_actions], "act")
         self.advantege = tf.placeholder(tf.float32,None , "advantege")  # advantege
         self.actor_lrate = lr
+        self.drop_prob = tf.placeholder(tf.float32)  # dropout (keep probability)
 
         with tf.variable_scope('Actor'):
-
             '''
-            Fully connected network for actor
+            CNN for actor
+            C_P_C_P_C_P_F_Out
             '''
-            self.conv1 = tf.layers.conv2d(inputs=self.state2, filters=16, kernel_size=8, strides=(4, 4),
+            self.conv1 = tf.layers.conv2d(inputs=self.state2, filters=16, kernel_size=8, strides=(4 , 4),
                                           padding="valid", activation=tf.nn.relu,
                                           kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d())
 
@@ -39,6 +40,8 @@ class Actor(object):
                 name='hidden1'
             )
 
+            self.drop1 = tf.nn.dropout(self.hidden1, self.drop_prob)
+
             self.acts_prob = tf.layers.dense(
                 inputs=self.hidden1,
                 units=n_actions,  # output units
@@ -56,13 +59,13 @@ class Actor(object):
         with tf.variable_scope('train'):
             self.train_op = tf.train.AdamOptimizer(self.actor_lrate).minimize(-self.exp_v)  # minimize(-exp_v) = maximize(exp_v)
 
-    def learn(self, state, action, td):
-        feed_dict = {self.state: state, self.action: action, self.advantege: td}
+    def learn(self, state, action, td,drop_prob = 0.5):
+        feed_dict = {self.state: state, self.action: action, self.advantege: td,self.drop_prob:drop_prob}
         self.sess.run([self.train_op, self.exp_v], feed_dict)
 
 
-    def choose_action(self, state):
-        probs = self.sess.run(self.acts_prob, {self.state: state})  # get probabilities for all actions
+    def choose_action(self, state,drop_prob = 0.5):
+        probs = self.sess.run(self.acts_prob, {self.state: state,self.drop_prob:drop_prob})
         return np.random.choice(np.arange(probs.shape[1]), p=probs.ravel())  # return a int
 
 
@@ -94,10 +97,10 @@ def discount_rewards(rewards):
 if __name__ == "__main__":
     np.random.seed(2)
     tf.set_random_seed(2)  # reproducible
-    MAX_EPISODE = 40000
-    MAX_EP_STEPS = 2000  # maximum time step in one episode
+    MAX_EPISODE = 7000
+    MAX_EP_STEPS = 5000  # maximum time step in one episode
     discount = 0.9  # reward discount in TD error
-
+    kepp_prob =0.5
     # Set the environment
     env = gym.make('SpaceInvaders-v0')
     env.seed(1)  # reproducible
@@ -119,7 +122,7 @@ if __name__ == "__main__":
         m_reward = []
         done = False
         while not done:
-            action = actor.choose_action([state])
+            action = actor.choose_action([state],kepp_prob)
             state_, r, done, info = env.step(action)
             state_ = resize(state_)
             m_reward.append(r)
@@ -132,11 +135,11 @@ if __name__ == "__main__":
                 discounted -= np.mean(discounted)
                 discounted /= np.std(discounted)
 
-                actor.learn(m_state,np.reshape(np.array(m_action),[len(m_action),N_Action]),np.reshape(np.array(discounted),[-1]))
+                actor.learn(m_state,np.reshape(np.array(m_action),[len(m_action),N_Action]),
+                            np.reshape(np.array(discounted),[-1]),kepp_prob)
                 ep_rs_sum = sum(m_reward)
                 epi_record.append(ep_rs_sum)
-                mean_reward = sum(epi_record)/len(epi_record)
+                mean_reward = sum(epi_record) / len(epi_record)
                 print "{} {} {}".format(i_episode, ep_rs_sum, 0.95 * mean_reward + 0.05 * ep_rs_sum)
-
 
 
