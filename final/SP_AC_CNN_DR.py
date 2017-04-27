@@ -372,12 +372,10 @@ class ActorCriticLearner:
                 update = True
 
                 if update:
-                    print("Updating")
+
                     self.actor.update_policy(advantage_vectors,drop_prob)
                     self.critic.update_value_estimate(drop_prob)
-                else:
-                    print("Good Solution, not updating")
-                # Delete the data collected so far
+
                 del advantage_vectors[:]
                 self.actor.reset_memory()
                 sum_reward = 0
