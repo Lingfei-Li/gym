@@ -94,8 +94,8 @@ def discount_rewards(rewards):
 if __name__ == "__main__":
     np.random.seed(2)
     tf.set_random_seed(2)  # reproducible
-    MAX_EPISODE = 40000
-    MAX_EP_STEPS = 2000  # maximum time step in one episode
+    MAX_EPISODE = 7000
+    MAX_EP_STEPS = 4000  # maximum time step in one episode
     discount = 0.9  # reward discount in TD error
 
     # Set the environment

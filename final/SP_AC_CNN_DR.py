@@ -441,7 +441,7 @@ if __name__ == "__main__":
     np.random.seed(1234)
     # env.monitor.start('./cartpole-pg-experiment-15')
     # Learning Parameters
-    max_episodes = 15000
+    max_episodes = 7000
     episodes_before_update = 2
 
     ac_learner = ActorCriticLearner(env, max_episodes, episodes_before_update)
