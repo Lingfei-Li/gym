@@ -303,7 +303,6 @@
 265.0
 450.0
 105.0
-tensorflow/core/common_runtime/gpu/pool_allocator.cc:247]
 325.0
 215.0
 110.0

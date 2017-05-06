@@ -2,7 +2,7 @@ import numpy as np
 import gym
 
 
-env = gym.make('Cartpole-v0')
+env = gym.make('CartPole-v0')
 # Set learning parameters
 num_episodes = 1000
 
