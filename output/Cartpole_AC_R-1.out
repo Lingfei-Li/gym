@@ -1,1230 +1,1000 @@
-episode: 0   reward: 32
-episode: 1   reward: 32
-episode: 2   reward: 33
-episode: 3   reward: 33
-episode: 4   reward: 32
-episode: 5   reward: 33
-episode: 6   reward: 33
-episode: 7   reward: 33
-episode: 8   reward: 33
-episode: 9   reward: 33
-episode: 10   reward: 34
-episode: 11   reward: 36
-episode: 12   reward: 36
-episode: 13   reward: 36
-episode: 14   reward: 37
-episode: 15   reward: 36
-episode: 16   reward: 36
-episode: 17   reward: 36
-episode: 18   reward: 36
-episode: 19   reward: 36
-episode: 20   reward: 36
-episode: 21   reward: 35
-episode: 22   reward: 35
-episode: 23   reward: 35
-episode: 24   reward: 35
-episode: 25   reward: 34
-episode: 26   reward: 34
-episode: 27   reward: 34
-episode: 28   reward: 34
-episode: 29   reward: 34
-episode: 30   reward: 34
-episode: 31   reward: 35
-episode: 32   reward: 35
-episode: 33   reward: 35
-episode: 34   reward: 35
-episode: 35   reward: 35
-episode: 36   reward: 36
-episode: 37   reward: 36
-episode: 38   reward: 36
-episode: 39   reward: 36
-episode: 40   reward: 36
-episode: 41   reward: 35
-episode: 42   reward: 36
-episode: 43   reward: 35
-episode: 44   reward: 35
-episode: 45   reward: 35
-episode: 46   reward: 35
-episode: 47   reward: 34
-episode: 48   reward: 34
-episode: 49   reward: 36
-episode: 50   reward: 35
-episode: 51   reward: 35
-episode: 52   reward: 37
-episode: 53   reward: 37
-episode: 54   reward: 37
-episode: 55   reward: 37
-episode: 56   reward: 38
-episode: 57   reward: 38
-episode: 58   reward: 40
-episode: 59   reward: 40
-episode: 60   reward: 40
-episode: 61   reward: 40
-episode: 62   reward: 42
-episode: 63   reward: 44
-episode: 64   reward: 44
-episode: 65   reward: 46
-episode: 66   reward: 47
-episode: 67   reward: 47
-episode: 68   reward: 47
-episode: 69   reward: 48
-episode: 70   reward: 48
-episode: 71   reward: 48
-episode: 72   reward: 49
-episode: 73   reward: 49
-episode: 74   reward: 50
-episode: 75   reward: 49
-episode: 76   reward: 50
-episode: 77   reward: 51
-episode: 78   reward: 52
-episode: 79   reward: 54
-episode: 80   reward: 54
-episode: 81   reward: 53
-episode: 82   reward: 53
-episode: 83   reward: 53
-episode: 84   reward: 53
-episode: 85   reward: 53
-episode: 86   reward: 56
-episode: 87   reward: 56
-episode: 88   reward: 58
-episode: 89   reward: 59
-episode: 90   reward: 60
-episode: 91   reward: 63
-episode: 92   reward: 64
-episode: 93   reward: 64
-episode: 94   reward: 64
-episode: 95   reward: 65
-episode: 96   reward: 68
-episode: 97   reward: 68
-episode: 98   reward: 67
-episode: 99   reward: 69
-episode: 100   reward: 71
-episode: 101   reward: 73
-episode: 102   reward: 76
-episode: 103   reward: 78
-episode: 104   reward: 77
-episode: 105   reward: 79
-episode: 106   reward: 83
-episode: 107   reward: 85
-episode: 108   reward: 86
-episode: 109   reward: 86
-episode: 110   reward: 86
-episode: 111   reward: 86
-episode: 112   reward: 89
-episode: 113   reward: 89
-episode: 114   reward: 91
-episode: 115   reward: 90
-episode: 116   reward: 95
-episode: 117   reward: 94
-episode: 118   reward: 94
-episode: 119   reward: 94
-episode: 120   reward: 97
-episode: 121   reward: 99
-episode: 122   reward: 101
-episode: 123   reward: 106
-episode: 124   reward: 108
-episode: 125   reward: 106
-episode: 126   reward: 103
-episode: 127   reward: 102
-episode: 128   reward: 100
-episode: 129   reward: 98
-episode: 130   reward: 95
-episode: 131   reward: 91
-episode: 132   reward: 88
-episode: 133   reward: 86
-episode: 134   reward: 83
-episode: 135   reward: 81
-episode: 136   reward: 78
-episode: 137   reward: 76
-episode: 138   reward: 75
-episode: 139   reward: 76
-episode: 140   reward: 75
-episode: 141   reward: 74
-episode: 142   reward: 73
-episode: 143   reward: 73
-episode: 144   reward: 72
-episode: 145   reward: 71
-episode: 146   reward: 71
-episode: 147   reward: 70
-episode: 148   reward: 68
-episode: 149   reward: 67
-episode: 150   reward: 65
-episode: 151   reward: 63
-episode: 152   reward: 63
-episode: 153   reward: 61
-episode: 154   reward: 60
-episode: 155   reward: 59
-episode: 156   reward: 57
-episode: 157   reward: 56
-episode: 158   reward: 55
-episode: 159   reward: 55
-episode: 160   reward: 54
-episode: 161   reward: 55
-episode: 162   reward: 59
-episode: 163   reward: 61
-episode: 164   reward: 64
-episode: 165   reward: 65
-episode: 166   reward: 67
-episode: 167   reward: 66
-episode: 168   reward: 66
-episode: 169   reward: 69
-episode: 170   reward: 70
-episode: 171   reward: 69
-episode: 172   reward: 68
-episode: 173   reward: 67
-episode: 174   reward: 65
-episode: 175   reward: 64
-episode: 176   reward: 63
-episode: 177   reward: 64
-episode: 178   reward: 65
-episode: 179   reward: 70
-episode: 180   reward: 72
-episode: 181   reward: 75
-episode: 182   reward: 79
-episode: 183   reward: 85
-episode: 184   reward: 89
-episode: 185   reward: 92
-episode: 186   reward: 96
-episode: 187   reward: 94
-episode: 188   reward: 92
-episode: 189   reward: 89
-episode: 190   reward: 87
-episode: 191   reward: 86
-episode: 192   reward: 85
-episode: 193   reward: 84
-episode: 194   reward: 86
-episode: 195   reward: 92
-episode: 196   reward: 94
-episode: 197   reward: 92
-episode: 198   reward: 95
-episode: 199   reward: 97
-episode: 200   reward: 101
-episode: 201   reward: 105
-episode: 202   reward: 108
-episode: 203   reward: 107
-episode: 204   reward: 106
-episode: 205   reward: 104
-episode: 206   reward: 102
-episode: 207   reward: 103
-episode: 208   reward: 101
-episode: 209   reward: 99
-episode: 210   reward: 97
-episode: 211   reward: 95
-episode: 212   reward: 96
-episode: 213   reward: 95
-episode: 214   reward: 93
-episode: 215   reward: 91
-episode: 216   reward: 92
-episode: 217   reward: 91
-episode: 218   reward: 93
-episode: 219   reward: 94
-episode: 220   reward: 96
-episode: 221   reward: 100
-episode: 222   reward: 104
-episode: 223   reward: 105
-episode: 224   reward: 106
-episode: 225   reward: 104
-episode: 226   reward: 104
-episode: 227   reward: 102
-episode: 228   reward: 106
-episode: 229   reward: 109
-episode: 230   reward: 109
-episode: 231   reward: 113
-episode: 232   reward: 115
-episode: 233   reward: 117
-episode: 234   reward: 119
-episode: 235   reward: 120
-episode: 236   reward: 126
-episode: 237   reward: 127
-episode: 238   reward: 128
-episode: 239   reward: 130
-episode: 240   reward: 130
-episode: 241   reward: 128
-episode: 242   reward: 127
-episode: 243   reward: 126
-episode: 244   reward: 124
-episode: 245   reward: 123
-episode: 246   reward: 122
-episode: 247   reward: 120
-episode: 248   reward: 117
-episode: 249   reward: 118
-episode: 250   reward: 119
-episode: 251   reward: 119
-episode: 252   reward: 119
-episode: 253   reward: 123
-episode: 254   reward: 123
-episode: 255   reward: 119
-episode: 256   reward: 118
-episode: 257   reward: 115
-episode: 258   reward: 113
-episode: 259   reward: 115
-episode: 260   reward: 127
-episode: 261   reward: 127
-episode: 262   reward: 129
-episode: 263   reward: 126
-episode: 264   reward: 122
-episode: 265   reward: 119
-episode: 266   reward: 115
-episode: 267   reward: 112
-episode: 268   reward: 110
-episode: 269   reward: 109
-episode: 270   reward: 112
-episode: 271   reward: 115
-episode: 272   reward: 116
-episode: 273   reward: 114
-episode: 274   reward: 112
-episode: 275   reward: 111
-episode: 276   reward: 110
-episode: 277   reward: 108
-episode: 278   reward: 107
-episode: 279   reward: 106
-episode: 280   reward: 104
-episode: 281   reward: 104
-episode: 282   reward: 104
-episode: 283   reward: 105
-episode: 284   reward: 106
-episode: 285   reward: 108
-episode: 286   reward: 111
-episode: 287   reward: 116
-episode: 288   reward: 125
-episode: 289   reward: 130
-episode: 290   reward: 129
-episode: 291   reward: 141
-episode: 292   reward: 141
-episode: 293   reward: 150
-episode: 294   reward: 153
-episode: 295   reward: 152
-episode: 296   reward: 155
-episode: 297   reward: 156
-episode: 298   reward: 162
-episode: 299   reward: 163
-episode: 300   reward: 164
-episode: 301   reward: 169
-episode: 302   reward: 174
-episode: 303   reward: 175
-episode: 304   reward: 178
-episode: 305   reward: 180
-episode: 306   reward: 180
-episode: 307   reward: 177
-episode: 308   reward: 181
-episode: 309   reward: 181
-episode: 310   reward: 178
-episode: 311   reward: 178
-episode: 312   reward: 176
-episode: 313   reward: 173
-episode: 314   reward: 170
-episode: 315   reward: 167
-episode: 316   reward: 167
-episode: 317   reward: 164
-episode: 318   reward: 162
-episode: 319   reward: 158
-episode: 320   reward: 157
-episode: 321   reward: 161
-episode: 322   reward: 162
-episode: 323   reward: 171
-episode: 324   reward: 177
-episode: 325   reward: 176
-episode: 326   reward: 179
-episode: 327   reward: 179
-episode: 328   reward: 178
-episode: 329   reward: 178
-episode: 330   reward: 176
-episode: 331   reward: 181
-episode: 332   reward: 182
-episode: 333   reward: 181
-episode: 334   reward: 182
-episode: 335   reward: 185
-episode: 336   reward: 186
-episode: 337   reward: 183
-episode: 338   reward: 179
-episode: 339   reward: 178
-episode: 340   reward: 180
-episode: 341   reward: 190
-episode: 342   reward: 192
-episode: 343   reward: 190
-episode: 344   reward: 194
-episode: 345   reward: 194
-episode: 346   reward: 205
-episode: 347   reward: 209
-episode: 348   reward: 214
-episode: 349   reward: 220
-episode: 350   reward: 218
-episode: 351   reward: 221
-episode: 352   reward: 221
-episode: 353   reward: 219
-episode: 354   reward: 213
-episode: 355   reward: 207
-episode: 356   reward: 200
-episode: 357   reward: 197
-episode: 358   reward: 193
-episode: 359   reward: 188
-episode: 360   reward: 184
-episode: 361   reward: 178
-episode: 362   reward: 174
-episode: 363   reward: 171
-episode: 364   reward: 168
-episode: 365   reward: 170
-episode: 366   reward: 170
-episode: 367   reward: 172
-episode: 368   reward: 169
-episode: 369   reward: 170
-episode: 370   reward: 168
-episode: 371   reward: 166
-episode: 372   reward: 167
-episode: 373   reward: 167
-episode: 374   reward: 168
-episode: 375   reward: 169
-episode: 376   reward: 179
-episode: 377   reward: 176
-episode: 378   reward: 173
-episode: 379   reward: 171
-episode: 380   reward: 177
-episode: 381   reward: 181
-episode: 382   reward: 183
-episode: 383   reward: 181
-episode: 384   reward: 185
-episode: 385   reward: 185
-episode: 386   reward: 184
-episode: 387   reward: 183
-episode: 388   reward: 180
-episode: 389   reward: 176
-episode: 390   reward: 173
-episode: 391   reward: 172
-episode: 392   reward: 172
-episode: 393   reward: 182
-episode: 394   reward: 188
-episode: 395   reward: 198
-episode: 396   reward: 201
-episode: 397   reward: 201
-episode: 398   reward: 212
-episode: 399   reward: 239
-episode: 400   reward: 242
-episode: 401   reward: 237
-episode: 402   reward: 232
-episode: 403   reward: 230
-episode: 404   reward: 227
-episode: 405   reward: 231
-episode: 406   reward: 245
-episode: 407   reward: 249
-episode: 408   reward: 248
-episode: 409   reward: 246
-episode: 410   reward: 240
-episode: 411   reward: 237
-episode: 412   reward: 233
-episode: 413   reward: 225
-episode: 414   reward: 220
-episode: 415   reward: 211
-episode: 416   reward: 203
-episode: 417   reward: 197
-episode: 418   reward: 191
-episode: 419   reward: 187
-episode: 420   reward: 182
-episode: 421   reward: 180
-episode: 422   reward: 179
-episode: 423   reward: 179
-episode: 424   reward: 179
-episode: 425   reward: 179
-episode: 426   reward: 187
-episode: 427   reward: 189
-episode: 428   reward: 193
-episode: 429   reward: 199
-episode: 430   reward: 196
-episode: 431   reward: 193
-episode: 432   reward: 190
-episode: 433   reward: 186
-episode: 434   reward: 183
-episode: 435   reward: 177
-episode: 436   reward: 171
-episode: 437   reward: 165
-episode: 438   reward: 158
-episode: 439   reward: 153
-episode: 440   reward: 147
-episode: 441   reward: 142
-episode: 442   reward: 137
-episode: 443   reward: 133
-episode: 444   reward: 129
-episode: 445   reward: 125
-episode: 446   reward: 122
-episode: 447   reward: 119
-episode: 448   reward: 120
-episode: 449   reward: 125
-episode: 450   reward: 126
-episode: 451   reward: 129
-episode: 452   reward: 131
-episode: 453   reward: 136
-episode: 454   reward: 142
-episode: 455   reward: 144
-episode: 456   reward: 146
-episode: 457   reward: 146
-episode: 458   reward: 147
-episode: 459   reward: 150
-episode: 460   reward: 152
-episode: 461   reward: 157
-episode: 462   reward: 162
-episode: 463   reward: 170
-episode: 464   reward: 169
-episode: 465   reward: 170
-episode: 466   reward: 183
-episode: 467   reward: 181
-episode: 468   reward: 178
-episode: 469   reward: 177
-episode: 470   reward: 177
-episode: 471   reward: 180
-episode: 472   reward: 182
-episode: 473   reward: 182
-episode: 474   reward: 182
-episode: 475   reward: 183
-episode: 476   reward: 192
-episode: 477   reward: 195
-episode: 478   reward: 194
-episode: 479   reward: 193
-episode: 480   reward: 191
-episode: 481   reward: 189
-episode: 482   reward: 188
-episode: 483   reward: 186
-episode: 484   reward: 185
-episode: 485   reward: 183
-episode: 486   reward: 178
-episode: 487   reward: 171
-episode: 488   reward: 165
-episode: 489   reward: 159
-episode: 490   reward: 154
-episode: 491   reward: 149
-episode: 492   reward: 147
-episode: 493   reward: 142
-episode: 494   reward: 141
-episode: 495   reward: 140
-episode: 496   reward: 141
-episode: 497   reward: 141
-episode: 498   reward: 146
-episode: 499   reward: 147
-episode: 500   reward: 149
-episode: 501   reward: 148
-episode: 502   reward: 150
-episode: 503   reward: 153
-episode: 504   reward: 156
-episode: 505   reward: 164
-episode: 506   reward: 165
-episode: 507   reward: 181
-episode: 508   reward: 223
-episode: 509   reward: 230
-episode: 510   reward: 236
-episode: 511   reward: 256
-episode: 512   reward: 294
-episode: 513   reward: 296
-episode: 514   reward: 305
-episode: 515   reward: 303
-episode: 516   reward: 299
-episode: 517   reward: 295
-episode: 518   reward: 294
-episode: 519   reward: 289
-episode: 520   reward: 285
-episode: 521   reward: 283
-episode: 522   reward: 281
-episode: 523   reward: 298
-episode: 524   reward: 325
-episode: 525   reward: 351
-episode: 526   reward: 349
-episode: 527   reward: 341
-episode: 528   reward: 330
-episode: 529   reward: 316
-episode: 530   reward: 303
-episode: 531   reward: 291
-episode: 532   reward: 278
-episode: 533   reward: 266
-episode: 534   reward: 256
-episode: 535   reward: 245
-episode: 536   reward: 234
-episode: 537   reward: 224
-episode: 538   reward: 214
-episode: 539   reward: 205
-episode: 540   reward: 197
-episode: 541   reward: 189
-episode: 542   reward: 181
-episode: 543   reward: 173
-episode: 544   reward: 167
-episode: 545   reward: 160
-episode: 546   reward: 154
-episode: 547   reward: 147
-episode: 548   reward: 142
-episode: 549   reward: 137
-episode: 550   reward: 131
-episode: 551   reward: 127
-episode: 552   reward: 122
-episode: 553   reward: 117
-episode: 554   reward: 113
-episode: 555   reward: 109
-episode: 556   reward: 105
-episode: 557   reward: 101
-episode: 558   reward: 98
-episode: 559   reward: 95
-episode: 560   reward: 92
-episode: 561   reward: 89
-episode: 562   reward: 86
-episode: 563   reward: 83
-episode: 564   reward: 81
-episode: 565   reward: 78
-episode: 566   reward: 76
-episode: 567   reward: 74
-episode: 568   reward: 72
-episode: 569   reward: 70
-episode: 570   reward: 68
-episode: 571   reward: 67
-episode: 572   reward: 65
-episode: 573   reward: 63
-episode: 574   reward: 62
-episode: 575   reward: 60
-episode: 576   reward: 59
-episode: 577   reward: 58
-episode: 578   reward: 57
-episode: 579   reward: 56
-episode: 580   reward: 56
-episode: 581   reward: 55
-episode: 582   reward: 54
-episode: 583   reward: 53
-episode: 584   reward: 52
-episode: 585   reward: 51
-episode: 586   reward: 51
-episode: 587   reward: 54
-episode: 588   reward: 65
-episode: 589   reward: 106
-episode: 590   reward: 108
-episode: 591   reward: 105
-episode: 592   reward: 103
-episode: 593   reward: 99
-episode: 594   reward: 97
-episode: 595   reward: 93
-episode: 596   reward: 90
-episode: 597   reward: 88
-episode: 598   reward: 85
-episode: 599   reward: 82
-episode: 600   reward: 79
-episode: 601   reward: 77
-episode: 602   reward: 74
-episode: 603   reward: 72
-episode: 604   reward: 70
-episode: 605   reward: 68
-episode: 606   reward: 67
-episode: 607   reward: 65
-episode: 608   reward: 64
-episode: 609   reward: 62
-episode: 610   reward: 61
-episode: 611   reward: 60
-episode: 612   reward: 58
-episode: 613   reward: 57
-episode: 614   reward: 56
-episode: 615   reward: 55
-episode: 616   reward: 53
-episode: 617   reward: 53
-episode: 618   reward: 51
-episode: 619   reward: 51
-episode: 620   reward: 50
-episode: 621   reward: 49
-episode: 622   reward: 48
-episode: 623   reward: 48
-episode: 624   reward: 47
-episode: 625   reward: 46
-episode: 626   reward: 45
-episode: 627   reward: 45
-episode: 628   reward: 44
-episode: 629   reward: 44
-episode: 630   reward: 43
-episode: 631   reward: 43
-episode: 632   reward: 43
-episode: 633   reward: 42
-episode: 634   reward: 42
-episode: 635   reward: 42
-episode: 636   reward: 41
-episode: 637   reward: 41
-episode: 638   reward: 40
-episode: 639   reward: 40
-episode: 640   reward: 40
-episode: 641   reward: 40
-episode: 642   reward: 40
-episode: 643   reward: 40
-episode: 644   reward: 40
-episode: 645   reward: 41
-episode: 646   reward: 45
-episode: 647   reward: 45
-episode: 648   reward: 44
-episode: 649   reward: 48
-episode: 650   reward: 58
-episode: 651   reward: 65
-episode: 652   reward: 69
-episode: 653   reward: 74
-episode: 654   reward: 80
-episode: 655   reward: 82
-episode: 656   reward: 87
-episode: 657   reward: 96
-episode: 658   reward: 101
-episode: 659   reward: 103
-episode: 660   reward: 105
-episode: 661   reward: 106
-episode: 662   reward: 108
-episode: 663   reward: 110
-episode: 664   reward: 112
-episode: 665   reward: 112
-episode: 666   reward: 114
-episode: 667   reward: 118
-episode: 668   reward: 118
-episode: 669   reward: 119
-episode: 670   reward: 115
-episode: 671   reward: 115
-episode: 672   reward: 116
-episode: 673   reward: 116
-episode: 674   reward: 117
-episode: 675   reward: 118
-episode: 676   reward: 118
-episode: 677   reward: 118
-episode: 678   reward: 118
-episode: 679   reward: 120
-episode: 680   reward: 122
-episode: 681   reward: 123
-episode: 682   reward: 124
-episode: 683   reward: 124
-episode: 684   reward: 121
-episode: 685   reward: 117
-episode: 686   reward: 113
-episode: 687   reward: 110
-episode: 688   reward: 107
-episode: 689   reward: 104
-episode: 690   reward: 101
-episode: 691   reward: 99
-episode: 692   reward: 96
-episode: 693   reward: 93
-episode: 694   reward: 91
-episode: 695   reward: 93
-episode: 696   reward: 94
-episode: 697   reward: 96
-episode: 698   reward: 99
-episode: 699   reward: 104
-episode: 700   reward: 137
-episode: 701   reward: 137
-episode: 702   reward: 132
-episode: 703   reward: 127
-episode: 704   reward: 123
-episode: 705   reward: 120
-episode: 706   reward: 116
-episode: 707   reward: 113
-episode: 708   reward: 109
-episode: 709   reward: 106
-episode: 710   reward: 103
-episode: 711   reward: 100
-episode: 712   reward: 97
-episode: 713   reward: 95
-episode: 714   reward: 92
-episode: 715   reward: 90
-episode: 716   reward: 87
-episode: 717   reward: 85
-episode: 718   reward: 82
-episode: 719   reward: 81
-episode: 720   reward: 82
-episode: 721   reward: 80
-episode: 722   reward: 82
-episode: 723   reward: 81
-episode: 724   reward: 83
-episode: 725   reward: 86
-episode: 726   reward: 84
-episode: 727   reward: 82
-episode: 728   reward: 80
-episode: 729   reward: 80
-episode: 730   reward: 81
-episode: 731   reward: 81
-episode: 732   reward: 81
-episode: 733   reward: 83
-episode: 734   reward: 86
-episode: 735   reward: 88
-episode: 736   reward: 87
-episode: 737   reward: 85
-episode: 738   reward: 85
-episode: 739   reward: 83
-episode: 740   reward: 81
-episode: 741   reward: 82
-episode: 742   reward: 82
-episode: 743   reward: 81
-episode: 744   reward: 84
-episode: 745   reward: 84
-episode: 746   reward: 86
-episode: 747   reward: 89
-episode: 748   reward: 95
-episode: 749   reward: 94
-episode: 750   reward: 92
-episode: 751   reward: 90
-episode: 752   reward: 88
-episode: 753   reward: 87
-episode: 754   reward: 85
-episode: 755   reward: 83
-episode: 756   reward: 86
-episode: 757   reward: 91
-episode: 758   reward: 99
-episode: 759   reward: 110
-episode: 760   reward: 108
-episode: 761   reward: 110
-episode: 762   reward: 120
-episode: 763   reward: 165
-episode: 764   reward: 181
-episode: 765   reward: 205
-episode: 766   reward: 218
-episode: 767   reward: 227
-episode: 768   reward: 267
-episode: 769   reward: 292
-episode: 770   reward: 328
-episode: 771   reward: 346
-episode: 772   reward: 339
-episode: 773   reward: 323
-episode: 774   reward: 309
-episode: 775   reward: 295
-episode: 776   reward: 283
-episode: 777   reward: 273
-episode: 778   reward: 265
-episode: 779   reward: 258
-episode: 780   reward: 275
-episode: 781   reward: 282
-episode: 782   reward: 275
-episode: 783   reward: 267
-episode: 784   reward: 261
-episode: 785   reward: 258
-episode: 786   reward: 253
-episode: 787   reward: 247
-episode: 788   reward: 237
-episode: 789   reward: 227
-episode: 790   reward: 219
-episode: 791   reward: 211
-episode: 792   reward: 206
-episode: 793   reward: 204
-episode: 794   reward: 200
-episode: 795   reward: 197
-episode: 796   reward: 196
-episode: 797   reward: 196
-episode: 798   reward: 198
-episode: 799   reward: 212
-episode: 800   reward: 216
-episode: 801   reward: 215
-episode: 802   reward: 216
-episode: 803   reward: 219
-episode: 804   reward: 224
-episode: 805   reward: 260
-episode: 806   reward: 262
-episode: 807   reward: 260
-episode: 808   reward: 266
-episode: 809   reward: 274
-episode: 810   reward: 269
-episode: 811   reward: 264
-episode: 812   reward: 258
-episode: 813   reward: 258
-episode: 814   reward: 274
-episode: 815   reward: 272
-episode: 816   reward: 294
-episode: 817   reward: 290
-episode: 818   reward: 277
-episode: 819   reward: 269
-episode: 820   reward: 259
-episode: 821   reward: 249
-episode: 822   reward: 242
-episode: 823   reward: 238
-episode: 824   reward: 238
-episode: 825   reward: 233
-episode: 826   reward: 223
-episode: 827   reward: 214
-episode: 828   reward: 205
-episode: 829   reward: 197
-episode: 830   reward: 189
-episode: 831   reward: 181
-episode: 832   reward: 174
-episode: 833   reward: 167
-episode: 834   reward: 161
-episode: 835   reward: 155
-episode: 836   reward: 150
-episode: 837   reward: 145
-episode: 838   reward: 141
-episode: 839   reward: 135
-episode: 840   reward: 132
-episode: 841   reward: 128
-episode: 842   reward: 124
-episode: 843   reward: 120
-episode: 844   reward: 117
-episode: 845   reward: 114
-episode: 846   reward: 112
-episode: 847   reward: 111
-episode: 848   reward: 108
-episode: 849   reward: 105
-episode: 850   reward: 103
-episode: 851   reward: 100
-episode: 852   reward: 97
-episode: 853   reward: 95
-episode: 854   reward: 94
-episode: 855   reward: 95
-episode: 856   reward: 99
-episode: 857   reward: 109
-episode: 858   reward: 113
-episode: 859   reward: 125
-episode: 860   reward: 137
-episode: 861   reward: 132
-episode: 862   reward: 148
-episode: 863   reward: 153
-episode: 864   reward: 164
-episode: 865   reward: 158
-episode: 866   reward: 152
-episode: 867   reward: 146
-episode: 868   reward: 141
-episode: 869   reward: 146
-episode: 870   reward: 177
-episode: 871   reward: 179
-episode: 872   reward: 173
-episode: 873   reward: 172
-episode: 874   reward: 172
-episode: 875   reward: 171
-episode: 876   reward: 164
-episode: 877   reward: 158
-episode: 878   reward: 151
-episode: 879   reward: 146
-episode: 880   reward: 141
-episode: 881   reward: 139
-episode: 882   reward: 134
-episode: 883   reward: 133
-episode: 884   reward: 145
-episode: 885   reward: 146
-episode: 886   reward: 143
-episode: 887   reward: 149
-episode: 888   reward: 144
-episode: 889   reward: 146
-episode: 890   reward: 140
-episode: 891   reward: 134
-episode: 892   reward: 129
-episode: 893   reward: 125
-episode: 894   reward: 120
-episode: 895   reward: 115
-episode: 896   reward: 111
-episode: 897   reward: 107
-episode: 898   reward: 103
-episode: 899   reward: 99
-episode: 900   reward: 96
-episode: 901   reward: 92
-episode: 902   reward: 89
-episode: 903   reward: 86
-episode: 904   reward: 83
-episode: 905   reward: 80
-episode: 906   reward: 78
-episode: 907   reward: 87
-episode: 908   reward: 84
-episode: 909   reward: 82
-episode: 910   reward: 79
-episode: 911   reward: 77
-episode: 912   reward: 74
-episode: 913   reward: 72
-episode: 914   reward: 70
-episode: 915   reward: 68
-episode: 916   reward: 66
-episode: 917   reward: 64
-episode: 918   reward: 62
-episode: 919   reward: 60
-episode: 920   reward: 59
-episode: 921   reward: 57
-episode: 922   reward: 56
-episode: 923   reward: 77
-episode: 924   reward: 81
-episode: 925   reward: 81
-episode: 926   reward: 80
-episode: 927   reward: 79
-episode: 928   reward: 78
-episode: 929   reward: 77
-episode: 930   reward: 75
-episode: 931   reward: 74
-episode: 932   reward: 73
-episode: 933   reward: 74
-episode: 934   reward: 77
-episode: 935   reward: 77
-episode: 936   reward: 86
-episode: 937   reward: 95
-episode: 938   reward: 98
-episode: 939   reward: 99
-episode: 940   reward: 102
-episode: 941   reward: 104
-episode: 942   reward: 102
-episode: 943   reward: 105
-episode: 944   reward: 150
-episode: 945   reward: 154
-episode: 946   reward: 152
-episode: 947   reward: 147
-episode: 948   reward: 146
-episode: 949   reward: 146
-episode: 950   reward: 162
-episode: 951   reward: 171
-episode: 952   reward: 181
-episode: 953   reward: 211
-episode: 954   reward: 251
-episode: 955   reward: 273
-episode: 956   reward: 261
-episode: 957   reward: 264
-episode: 958   reward: 302
-episode: 959   reward: 338
-episode: 960   reward: 342
-episode: 961   reward: 330
-episode: 962   reward: 316
-episode: 963   reward: 302
-episode: 964   reward: 293
-episode: 965   reward: 294
-episode: 966   reward: 282
-episode: 967   reward: 271
-episode: 968   reward: 264
-episode: 969   reward: 275
-episode: 970   reward: 279
-episode: 971   reward: 270
-episode: 972   reward: 264
-episode: 973   reward: 261
-episode: 974   reward: 261
-episode: 975   reward: 260
-episode: 976   reward: 298
-episode: 977   reward: 334
-episode: 978   reward: 326
-episode: 979   reward: 317
-episode: 980   reward: 306
-episode: 981   reward: 296
-episode: 982   reward: 304
-episode: 983   reward: 299
-episode: 984   reward: 302
-episode: 985   reward: 311
-episode: 986   reward: 308
-episode: 987   reward: 308
-episode: 988   reward: 313
-episode: 989   reward: 310
-episode: 990   reward: 302
-episode: 991   reward: 289
-episode: 992   reward: 276
-episode: 993   reward: 264
-episode: 994   reward: 253
-episode: 995   reward: 243
-episode: 996   reward: 238
-episode: 997   reward: 234
-episode: 998   reward: 230
-episode: 999   reward: 222
-episode: 1000   reward: 218
-episode: 1001   reward: 210
-episode: 1002   reward: 205
-episode: 1003   reward: 206
-episode: 1004   reward: 198
-episode: 1005   reward: 194
-episode: 1006   reward: 187
-episode: 1007   reward: 183
-episode: 1008   reward: 177
-episode: 1009   reward: 172
-episode: 1010   reward: 165
-episode: 1011   reward: 160
-episode: 1012   reward: 154
-episode: 1013   reward: 148
-episode: 1014   reward: 144
-episode: 1015   reward: 143
-episode: 1016   reward: 142
-episode: 1017   reward: 138
-episode: 1018   reward: 138
-episode: 1019   reward: 133
-episode: 1020   reward: 133
-episode: 1021   reward: 129
-episode: 1022   reward: 125
-episode: 1023   reward: 120
-episode: 1024   reward: 117
-episode: 1025   reward: 114
-episode: 1026   reward: 110
-episode: 1027   reward: 107
-episode: 1028   reward: 104
-episode: 1029   reward: 102
-episode: 1030   reward: 99
-episode: 1031   reward: 96
-episode: 1032   reward: 94
-episode: 1033   reward: 91
-episode: 1034   reward: 88
-episode: 1035   reward: 86
-episode: 1036   reward: 84
-episode: 1037   reward: 81
-episode: 1038   reward: 79
-episode: 1039   reward: 77
-episode: 1040   reward: 75
-episode: 1041   reward: 73
-episode: 1042   reward: 71
-episode: 1043   reward: 69
-episode: 1044   reward: 68
-episode: 1045   reward: 67
-episode: 1046   reward: 65
-episode: 1047   reward: 64
-episode: 1048   reward: 64
-episode: 1049   reward: 63
-episode: 1050   reward: 61
-episode: 1051   reward: 60
-episode: 1052   reward: 61
-episode: 1053   reward: 60
-episode: 1054   reward: 59
-episode: 1055   reward: 58
-episode: 1056   reward: 58
-episode: 1057   reward: 61
-episode: 1058   reward: 65
-episode: 1059   reward: 67
-episode: 1060   reward: 73
-episode: 1061   reward: 72
-episode: 1062   reward: 79
-episode: 1063   reward: 85
-episode: 1064   reward: 99
-episode: 1065   reward: 97
-episode: 1066   reward: 99
-episode: 1067   reward: 103
-episode: 1068   reward: 106
-episode: 1069   reward: 108
-episode: 1070   reward: 106
-episode: 1071   reward: 104
-episode: 1072   reward: 108
-episode: 1073   reward: 118
-episode: 1074   reward: 120
-episode: 1075   reward: 129
-episode: 1076   reward: 129
-episode: 1077   reward: 132
-episode: 1078   reward: 142
-episode: 1079   reward: 143
-episode: 1080   reward: 139
-episode: 1081   reward: 148
-episode: 1082   reward: 158
-episode: 1083   reward: 169
-episode: 1084   reward: 171
-episode: 1085   reward: 188
-episode: 1086   reward: 186
-episode: 1087   reward: 198
-episode: 1088   reward: 191
-episode: 1089   reward: 188
-episode: 1090   reward: 186
-episode: 1091   reward: 179
-episode: 1092   reward: 172
-episode: 1093   reward: 166
-episode: 1094   reward: 164
-episode: 1095   reward: 172
-episode: 1096   reward: 173
-episode: 1097   reward: 181
-episode: 1098   reward: 179
-episode: 1099   reward: 179
-episode: 1100   reward: 180
-episode: 1101   reward: 177
-episode: 1102   reward: 177
-episode: 1103   reward: 175
-episode: 1104   reward: 174
-episode: 1105   reward: 174
-episode: 1106   reward: 176
-episode: 1107   reward: 218
-episode: 1108   reward: 258
-episode: 1109   reward: 296
-episode: 1110   reward: 332
-episode: 1111   reward: 366
-episode: 1112   reward: 356
-episode: 1113   reward: 348
-episode: 1114   reward: 332
-episode: 1115   reward: 318
-episode: 1116   reward: 304
-episode: 1117   reward: 291
-episode: 1118   reward: 278
-episode: 1119   reward: 266
-episode: 1120   reward: 255
-episode: 1121   reward: 245
-episode: 1122   reward: 234
-episode: 1123   reward: 224
-episode: 1124   reward: 215
-episode: 1125   reward: 206
-episode: 1126   reward: 198
-episode: 1127   reward: 190
-episode: 1128   reward: 182
-episode: 1129   reward: 175
-episode: 1130   reward: 168
-episode: 1131   reward: 161
-episode: 1132   reward: 155
-episode: 1133   reward: 149
-episode: 1134   reward: 143
-episode: 1135   reward: 138
-episode: 1136   reward: 133
-episode: 1137   reward: 128
-episode: 1138   reward: 123
-episode: 1139   reward: 119
-episode: 1140   reward: 115
-episode: 1141   reward: 111
-episode: 1142   reward: 107
-episode: 1143   reward: 104
-episode: 1144   reward: 100
-episode: 1145   reward: 97
-episode: 1146   reward: 94
-episode: 1147   reward: 91
-episode: 1148   reward: 89
-episode: 1149   reward: 86
-episode: 1150   reward: 84
-episode: 1151   reward: 82
-episode: 1152   reward: 80
-episode: 1153   reward: 79
-episode: 1154   reward: 77
-episode: 1155   reward: 76
-episode: 1156   reward: 74
-episode: 1157   reward: 73
-episode: 1158   reward: 71
-episode: 1159   reward: 70
-episode: 1160   reward: 69
-episode: 1161   reward: 67
-episode: 1162   reward: 66
-episode: 1163   reward: 65
-episode: 1164   reward: 63
-episode: 1165   reward: 62
-episode: 1166   reward: 60
-episode: 1167   reward: 59
-episode: 1168   reward: 58
-episode: 1169   reward: 57
-episode: 1170   reward: 55
-episode: 1171   reward: 54
-episode: 1172   reward: 53
-episode: 1173   reward: 52
-episode: 1174   reward: 51
-episode: 1175   reward: 50
-episode: 1176   reward: 49
-episode: 1177   reward: 49
-episode: 1178   reward: 48
-episode: 1179   reward: 49
-episode: 1180   reward: 53
-episode: 1181   reward: 58
-episode: 1182   reward: 61
-episode: 1183   reward: 62
-episode: 1184   reward: 65
-episode: 1185   reward: 69
-episode: 1186   reward: 76
-episode: 1187   reward: 79
-episode: 1188   reward: 82
-episode: 1189   reward: 80
-episode: 1190   reward: 79
-episode: 1191   reward: 78
-episode: 1192   reward: 78
-episode: 1193   reward: 76
-episode: 1194   reward: 75
-episode: 1195   reward: 75
-episode: 1196   reward: 73
-episode: 1197   reward: 72
-episode: 1198   reward: 71
-episode: 1199   reward: 70
-episode: 1200   reward: 70
-episode: 1201   reward: 70
-episode: 1202   reward: 69
-episode: 1203   reward: 68
-episode: 1204   reward: 69
-episode: 1205   reward: 68
-episode: 1206   reward: 68
-episode: 1207   reward: 70
-episode: 1208   reward: 70
-episode: 1209   reward: 79
-episode: 1210   reward: 78
-episode: 1211   reward: 77
-episode: 1212   reward: 77
-episode: 1213   reward: 76
-episode: 1214   reward: 75
-episode: 1215   reward: 73
-episode: 1216   reward: 72
-episode: 1217   reward: 70
-episode: 1218   reward: 70
-episode: 1219   reward: 69
-episode: 1220   reward: 71
-episode: 1221   reward: 73
-episode: 1222   reward: 73
-episode: 1223   reward: 72
-episode: 1224   reward: 71
-episode: 1225   reward: 71
-episode: 1226   reward: 69
-episode: 1227   reward: 72
-episode: 1228   reward: 72
-episode:
+32
+32
+33
+33
+32
+33
+33
+33
+33
+33
+34
+36
+36
+36
+37
+36
+36
+36
+36
+36
+36
+35
+35
+35
+35
+34
+34
+34
+34
+34
+34
+35
+35
+35
+35
+35
+36
+36
+36
+36
+36
+35
+36
+35
+35
+35
+35
+34
+34
+36
+35
+35
+37
+37
+37
+37
+38
+38
+40
+40
+40
+40
+42
+44
+44
+46
+47
+47
+47
+48
+48
+48
+49
+49
+50
+49
+50
+51
+52
+54
+54
+53
+53
+53
+53
+53
+56
+56
+58
+59
+60
+63
+64
+64
+64
+65
+68
+68
+67
+69
+71
+73
+76
+78
+77
+79
+83
+85
+86
+86
+86
+86
+89
+89
+91
+90
+95
+94
+94
+94
+97
+99
+101
+106
+108
+106
+103
+102
+100
+98
+95
+91
+88
+86
+83
+81
+78
+76
+75
+76
+75
+74
+73
+73
+72
+71
+71
+70
+68
+67
+65
+63
+63
+61
+60
+59
+57
+56
+55
+55
+54
+55
+59
+61
+64
+65
+67
+66
+66
+69
+70
+69
+68
+67
+65
+64
+63
+64
+65
+70
+72
+75
+79
+85
+89
+92
+96
+94
+92
+89
+87
+86
+85
+84
+86
+92
+94
+92
+95
+97
+101
+105
+108
+107
+106
+104
+102
+103
+101
+99
+97
+95
+96
+95
+93
+91
+92
+91
+93
+94
+96
+100
+104
+105
+106
+104
+104
+102
+106
+109
+109
+113
+115
+117
+119
+120
+126
+127
+128
+130
+130
+128
+127
+126
+124
+123
+122
+120
+117
+118
+119
+119
+119
+123
+123
+119
+118
+115
+113
+115
+127
+127
+129
+126
+122
+119
+115
+112
+110
+109
+112
+115
+116
+114
+112
+111
+110
+108
+107
+106
+104
+104
+104
+105
+106
+108
+111
+116
+125
+130
+129
+141
+141
+150
+153
+152
+155
+156
+162
+163
+164
+169
+174
+175
+178
+180
+180
+177
+181
+181
+178
+178
+176
+173
+170
+167
+167
+164
+162
+158
+157
+161
+162
+171
+177
+176
+179
+179
+178
+178
+176
+181
+182
+181
+182
+185
+186
+183
+179
+178
+180
+190
+192
+190
+194
+194
+205
+209
+214
+220
+218
+221
+221
+219
+213
+207
+200
+197
+193
+188
+184
+178
+174
+171
+168
+170
+170
+172
+169
+170
+168
+166
+167
+167
+168
+169
+179
+176
+173
+171
+177
+181
+183
+181
+185
+185
+184
+183
+180
+176
+173
+172
+172
+182
+188
+198
+201
+201
+212
+239
+242
+237
+232
+230
+227
+231
+245
+249
+248
+246
+240
+237
+233
+225
+220
+211
+203
+197
+191
+187
+182
+180
+179
+179
+179
+179
+187
+189
+193
+199
+196
+193
+190
+186
+183
+177
+171
+165
+158
+153
+147
+142
+137
+133
+129
+125
+122
+119
+120
+125
+126
+129
+131
+136
+142
+144
+146
+146
+147
+150
+152
+157
+162
+170
+169
+170
+183
+181
+178
+177
+177
+180
+182
+182
+182
+183
+192
+195
+194
+193
+191
+189
+188
+186
+185
+183
+178
+171
+165
+159
+154
+149
+147
+142
+141
+140
+141
+141
+146
+147
+149
+148
+150
+153
+156
+164
+165
+181
+223
+230
+236
+256
+294
+296
+305
+303
+299
+295
+294
+289
+285
+283
+281
+298
+325
+351
+349
+341
+330
+316
+303
+291
+278
+266
+256
+245
+234
+224
+214
+205
+197
+189
+181
+173
+167
+160
+154
+147
+142
+137
+131
+127
+122
+117
+113
+109
+105
+101
+98
+95
+92
+89
+86
+83
+81
+78
+76
+74
+72
+70
+68
+67
+65
+63
+62
+60
+59
+58
+57
+56
+56
+55
+54
+53
+52
+51
+51
+54
+65
+106
+108
+105
+103
+99
+97
+93
+90
+88
+85
+82
+79
+77
+74
+72
+70
+68
+67
+65
+64
+62
+61
+60
+58
+57
+56
+55
+53
+53
+51
+51
+50
+49
+48
+48
+47
+46
+45
+45
+44
+44
+43
+43
+43
+42
+42
+42
+41
+41
+40
+40
+40
+40
+40
+40
+40
+41
+45
+45
+44
+48
+58
+65
+69
+74
+80
+82
+87
+96
+101
+103
+105
+106
+108
+110
+112
+112
+114
+118
+118
+119
+115
+115
+116
+116
+117
+118
+118
+118
+118
+120
+122
+123
+124
+124
+121
+117
+113
+110
+107
+104
+101
+99
+96
+93
+91
+93
+94
+96
+99
+104
+137
+137
+132
+127
+123
+120
+116
+113
+109
+106
+103
+100
+97
+95
+92
+90
+87
+85
+82
+81
+82
+80
+82
+81
+83
+86
+84
+82
+80
+80
+81
+81
+81
+83
+86
+88
+87
+85
+85
+83
+81
+82
+82
+81
+84
+84
+86
+89
+95
+94
+92
+90
+88
+87
+85
+83
+86
+91
+99
+110
+108
+110
+120
+165
+181
+205
+218
+227
+267
+292
+328
+346
+339
+323
+309
+295
+283
+273
+265
+258
+275
+282
+275
+267
+261
+258
+253
+247
+237
+227
+219
+211
+206
+204
+200
+197
+196
+196
+198
+212
+216
+215
+216
+219
+224
+260
+262
+260
+266
+274
+269
+264
+258
+258
+274
+272
+294
+290
+277
+269
+259
+249
+242
+238
+238
+233
+223
+214
+205
+197
+189
+181
+174
+167
+161
+155
+150
+145
+141
+135
+132
+128
+124
+120
+117
+114
+112
+111
+108
+105
+103
+100
+97
+95
+94
+95
+99
+109
+113
+125
+137
+132
+148
+153
+164
+158
+152
+146
+141
+146
+177
+179
+173
+172
+172
+171
+164
+158
+151
+146
+141
+139
+134
+133
+145
+146
+143
+149
+144
+146
+140
+134
+129
+125
+120
+115
+111
+107
+103
+99
+96
+92
+89
+86
+83
+80
+78
+87
+84
+82
+79
+77
+74
+72
+70
+68
+66
+64
+62
+60
+59
+57
+56
+77
+81
+81
+80
+79
+78
+77
+75
+74
+73
+74
+77
+77
+86
+95
+98
+99
+102
+104
+102
+105
+150
+154
+152
+147
+146
+146
+162
+171
+181
+211
+251
+273
+261
+264
+302
+338
+342
+330
+316
+302
+293
+294
+282
+271
+264
+275
+279
+270
+264
+261
+261
+260
+298
+334
+326
+317
+306
+296
+304
+299
+302
+311
+308
+308
+313
+310
+302
+289
+276
+264
+253
+243
+238
+234
+230
+222
