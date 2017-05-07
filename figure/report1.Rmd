@@ -1,0 +1,206 @@
+---
+title: "Report1"
+author: "Shuo Niu"
+date: "2017/4/29"
+output:
+  html_document: default
+---
+
+```{r,include=FALSE}
+knitr::opts_chunk$set(echo = T,message = F,warning = F)
+library(forecast)
+library(plotly)
+library(TTR)
+library(tidyverse)
+```
+
+```{r,eval=F}
+# # rewrite SP_AC_DENSE
+# path = "/Users/Lament/Desktop/CS838/gym/output"
+# data <- read.table(paste(path,"/","SP_AC_DENSE.txt",sep = ""))
+# sp_ac_dense <- c(data[1:4000,1],data[4001:7000,1]*0.5)
+# write.table(file = "SP_AC_DENSE.txt",x = sp_ac_dense)
+```
+
+```{r}
+down_sample <- function(data,num){
+  step <- length(data)%/%num
+  return(data[seq(1,length(data),by = step)])
+}
+
+res_mean <- function(data,ratio,boost){
+  res <- rep(0,length(data))
+  ma = data[1]
+  for(i in 1:length(res)){
+    ma <- ma*ratio+(1-ratio)*data[i]
+    res[i] = ma
+  }
+  return(boost*res)
+}
+
+format <- function(data,name,ratio,boost,pre_data = NULL,len = 7000){
+   res <- down_sample(data = res_mean(data,ratio,boost),num = len)[1:len]
+   newdata <- tibble(value = res) %>% mutate(label = name , index= 1:len)
+   if(!is.null(pre_data)) newdata <- bind_rows(newdata,pre_data)
+   return(newdata)
+}
+
+visf <- function(data,name,lim){
+  data %>% ggplot(mapping = aes(x = index,y = value, color = label)) + coord_cartesian(ylim = c(0, lim)) + geom_line() + labs(title  = name,x = "Episode",y = "Reward") + theme(plot.title = element_text(hjust = 0.5))
+}
+
+```
+
+# Cartpole negative reward
+
+```{r}
+path = "/Users/Lament/Desktop/CS838/gym/output"
+Reward_files = list.files(path,pattern = "Cartpole_AC_R")
+res = NULL
+add_label <-  c(1,10,5,0)
+label <- c("-1","-10","-5","0")
+for(i in c(4,1,3,2)){
+  data <- read.table(paste(path,"/",Reward_files[i],sep = ""))
+  res <- format(data[,1] + add_label[i],name = label[i],ratio = 0.95,boost = 1,pre_data = res,len = 320)
+}
+visf(res,"Terminal State Reward Comparsion",220)
+ggsave("Cartpole_terminal.png", units="in", width=6, height=4, dpi=300)
+```
+
+# Cartpole Optimizer
+
+```{r}
+path = "/Users/Lament/Desktop/CS838/gym/output"
+opt_files = list.files(path,pattern = "Cartpole_optimizer")
+res = NULL
+label <- sub(pattern = "Cartpole_optimizer_(.*)\\.txt",replacement = "\\1",x = opt_files)
+for(i in 1:length(label)){
+  data <- read.table(paste(path,"/",opt_files[i],sep = ""))
+  res <- format(data[,1] ,name = label[i],ratio = 0.9,boost = 1,pre_data = res,len = 320)
+}
+visf(res,"Optimizer Comparsion",220)
+ggsave("Cartpole_optimizer.png", units="in", width=6, height=4, dpi=300)
+```
+
+# Cartpole Batch_size
+```{r}
+path = "/Users/Lament/Desktop/CS838/gym/output"
+batch_files = list.files(path,pattern = "Cartpole_AC_B")
+res = NULL
+label <- sub(pattern = "Cartpole_AC_B(.*)\\.out",replacement = "\\1",x = batch_files)
+for(i in 1:length(label)){
+  data <- read.table(paste(path,"/",batch_files[i],sep = ""))
+  res <- format(data[,1] ,name = label[i],ratio = 0.9,boost = 1,pre_data = res,len = 320)
+}
+visf(res,"Batch Size Comparsion",220)
+ggsave("Cartpole_batch.png", units="in", width=6, height=4, dpi=300)
+```
+
+# Cartpole Learning Rate
+```{r}
+lr_files = list.files(path,pattern = "Cartpole_AC_LR")
+res = NULL
+label <- sub(pattern = "Cartpole_AC_LR(.*)\\.out",replacement = "\\1",x = lr_files)
+for(i in 1:length(label)){
+  data <- read.table(paste(path,"/",lr_files[i],sep = ""))
+  res <- format(data[,1] ,name = label[i],ratio = 0.9,boost = 1,pre_data = res,len = 320)
+}
+visf(res,"Learning Rate Comparsion",220)
+ggsave("Cartpole_lr.png", units="in", width=6, height=4, dpi=300)
+```
+
+# Cartpole
+
+```{r}
+path = "/Users/Lament/Desktop/CS838/gym/output"
+Cart_files = list.files(path,pattern = "Cartpole")
+res = NULL
+label <- c("AC","Qnet + ER","PG","Qnet","Random")
+for(i in 1:length(Cart_files)){
+  data <- read.table(paste(path,"/",Cart_files[i],sep = ""))
+  res <- format(data[,1],name = label[i],ratio = 0.95,boost = 1,pre_data = res,len = 1000)
+}
+visf(res,"Cartpole",220)
+ggsave("Cartpole.png", units="in", width=6, height=4, dpi=300)
+```
+
+# Pong
+
+```{r}
+path = "/Users/Lament/Desktop/CS838/gym/output"
+Pong_files = list.files(path,pattern = "PONG")
+res = NULL
+label <- c("DQN Conv","DQN Dense","DQN Dense","Random")
+
+data <- read.table(paste(path,"/",Pong_files[1],sep = ""))
+res <- format(data[,1],name = label[1],ratio = 0.99,boost = 1,pre_data = res,len = 6700)
+data <- read.table(paste(path,"/",Pong_files[3],sep = ""))
+data <- c(data[seq(1,10000,2),1],data[10001:11700,1])
+pong_pg <- tibble(value = data) %>% mutate(label = "DQN Dense" , index= 1:6700)
+res <- bind_rows(res,pong_pg)
+pong_rand <- read.table(paste(path,"/",Pong_files[4],sep = ""))
+pong_rand <- tibble(value = res_mean(c(rep(pong_rand[,1],6),pong_rand[1:700,1]),0.95,1)) %>% mutate(index = 1:6700,label = "Random") 
+res <- bind_rows(res,pong_rand)
+res %>% ggplot(mapping = aes(x = index,y = value, color = label)) + coord_cartesian(ylim = c(-21, -6)) + geom_line() + labs(title  = "Pong",x = "Episode",y = "Reward") + theme(plot.title = element_text(hjust = 0.5))
+ggsave("Pong.png", units="in", width=6, height=4, dpi=300)
+```
+
+
+# Space Invader DQN_CNN
+
+```{r,SP_DQN}
+path = "/Users/Lament/Desktop/CS838/gym/output"
+files = list.files(path,pattern = "SP_DQN")
+res = NULL
+label <- c("2Conv+Dropout","2Conv","3Conv","3Conv+Dropout")
+for(i in 1:length(files)){
+  data <- read.table(paste(path,"/",files[i],sep = ""))
+  res <- format(data[,1],name = label[i],boost = 2.5,ratio = 0.999,pre_data = res,len = 7000)
+}
+visf(res,"Average Reward on SpaceInvaders using DQN",300)
+ggsave("SP_DQN.png", units="in", width=6, height=4, dpi=300)
+```
+
+# Space Invader DRNN
+
+```{r}
+path = "/Users/Lament/Desktop/CS838/gym/output"
+files = list.files(path,pattern = "SP_DRQN")
+res = NULL
+label <- c("DRQN_Dropout","DRQN")
+for(i in 1:length(files)){
+  data <- read.table(paste(path,"/",files[i],sep = ""))
+  res <- format(data[,1],name = label[i],boost = 2.5,ratio = 0.997,pre_data = res,len = 7000)
+}
+visf(res,"Average Reward on SpaceInvaders using DRQN",500)
+ggsave("SP_DRQN.png", units="in", width=6, height=4, dpi=300)
+```
+
+# Space Invader AC
+
+```{r}
+path = "/Users/Lament/Desktop/CS838/gym/output"
+files = list.files(path,pattern = "SP_AC")
+label = c("3Conv+Dropout","2Conv+BatchNorm","2Conv+Dropout","2Conv","Dense")
+res = NULL
+for(i in 1:length(files)){
+  data <- read.table(paste(path,"/",files[i],sep = ""))
+  res <- format(data[,1],name = label[i],boost = 2.5,ratio = 0.997,pre_data = res,len = 7000)
+}
+visf(res,"Average Reward on SpaceInvaders using Actor Critic",700)
+ggsave("SP_AC.png", units="in", width=6, height=4, dpi=300)
+```
+
+# Space Invader Comparsion
+```{r}
+best_sp <- c("SP_DQN_3CONV.out","SP_AC_CNN_3Conv.out","SP_DRQN_DR_raw.txt")
+label <- c("DQN 3Conv+Dropout","AC 3Conv+Dropout","DRQN Dropout")
+res = NULL
+for(i in 1:length(best_sp)){
+  data <- read.table(paste(path,"/",best_sp[i],sep = ""))
+  res <- format(data[,1],name = label[i],boost = 2.5,ratio = 0.997,pre_data = res,len = 7000)
+}
+visf(res,"Average Reward on SpaceInvaders",700)
+ggsave("SP_Best.png", units="in", width=6, height=4, dpi=300)
+```
+
