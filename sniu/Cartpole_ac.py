@@ -39,11 +39,13 @@ class Actor:
 
             self.log_action_probability = tf.reduce_sum(self.action_input * tf.log(self.policy))
             self.loss = -self.log_action_probability * self.y  # Loss is score function times advantage
-            self.optim = tf.train.AdamOptimizer(self.learning_rate).minimize(self.loss)
+            # self.optim = tf.train.AdamOptimizer(self.learning_rate).minimize(self.loss)
+            # self.optim = tf.train.GradientDescentOptimizer(self.learning_rate).minimize(self.loss)
+            self.optim = tf.train.AdagradOptimizer(self.learning_rate).minimize(self.loss)
             # Initializing all variables
             self.init = tf.global_variables_initializer()
 
-            print ("Policy Graph Constructed")
+
 
         self.sess = tf.Session(graph=self.graph)
         self.sess.run(self.init)
@@ -169,9 +171,11 @@ class Critic:
             self.return_input = tf.placeholder("float")  # Target return
             self.value_pred = self.multilayer_perceptron(self.state_input, self.weights, self.biases)
             self.loss = tf.reduce_mean(tf.pow(self.value_pred - self.return_input, 2))
-            self.optim = tf.train.AdamOptimizer(self.learning_rate).minimize(self.loss)
+            # self.optim = tf.train.AdamOptimizer(self.learning_rate).minimize(self.loss)
+            # self.optim = tf.train.GradientDescentOptimizer(self.learning_rate).minimize(self.loss)
+            self.optim = tf.train.AdagradOptimizer(self.learning_rate).minimize(self.loss)
             init = tf.global_variables_initializer()
-        print("Value Graph Constructed")
+
         self.sess = tf.Session(graph=self.graph)
         self.sess.run(init)
 
@@ -259,7 +263,7 @@ class ActorCriticLearner:
             sum_reward += episode_total_reward
             if (i + 1) % self.episodes_before_update == 0:
                 avg_reward = sum_reward / self.episodes_before_update
-                print "Current {} episode average reward: {}, episode sum reward {}".format(self.episodes_before_update, avg_reward,sum_reward)
+                print "{}".format(avg_reward)
                 # In this part of the code I try to reduce the effects of randomness leading to oscillations in my
                 # network by sticking to a solution if it is close to final solution.
                 # If the average reward for past batch of episodes exceeds that for solving the environment, continue with it
@@ -269,12 +273,10 @@ class ActorCriticLearner:
                     update = True
 
                 if update:
-                    print "Updating"
+
                     self.actor.update_policy(advantage_vectors)
                     self.critic.update_value_estimate()
-                else:
-                    print "Good Solution, not updating"
-                # Delete the data collected so far
+
                 del advantage_vectors[:]
                 self.actor.reset_memory()
                 sum_reward = 0
@@ -293,4 +295,3 @@ if __name__ == "__main__":
 
     ac_learner = ActorCriticLearner(env, max_episodes, episodes_before_update)
     ac_learner.learn()
-    env.monitor.close()
