@@ -134,7 +134,7 @@ for i_episode in range(MAX_EPISODE):
         track_r.append(r)
 
         td_error = critic.learn(s, r, s_)  # gradient = grad[r + discount * V(s_) - V(s)]
-        print td_error
+
         actor.learn(s, a, td_error)     # true_gradient = grad[logPi(s,a) * td_error]
 
         s = s_
