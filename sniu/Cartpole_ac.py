@@ -42,7 +42,8 @@ class Actor:
             # self.optim = tf.train.AdamOptimizer(self.learning_rate).minimize(self.loss)
             # self.optim = tf.train.GradientDescentOptimizer(self.learning_rate).minimize(self.loss)
             # self.optim = tf.train.AdagradOptimizer(self.learning_rate).minimize(self.loss)
-            self.optim = tf.train.RMSPropOptimizer(self.learning_rate).minimize(self.loss)
+            # self.optim = tf.train.RMSPropOptimizer(self.learning_rate).minimize(self.loss)
+            self.optim = tf.train.MomentumOptimizer(self.learning_rate,0.9).minimize(self.loss)
             # Initializing all variables
             self.init = tf.global_variables_initializer()
 
@@ -175,7 +176,9 @@ class Critic:
             # self.optim = tf.train.AdamOptimizer(self.learning_rate).minimize(self.loss)
             # self.optim = tf.train.GradientDescentOptimizer(self.learning_rate).minimize(self.loss)
             # self.optim = tf.train.AdagradOptimizer(self.learning_rate).minimize(self.loss)
-            self.optim = tf.train.RMSPropOptimizer(self.learning_rate).minimize(self.loss)
+            # self.optim = tf.train.RMSPropOptimizer(self.learning_rate).minimize(self.loss)
+            self.optim = tf.train.MomentumOptimizer(self.learning_rate,0.9).minimize(self.loss)
+
             init = tf.global_variables_initializer()
 
         self.sess = tf.Session(graph=self.graph)
